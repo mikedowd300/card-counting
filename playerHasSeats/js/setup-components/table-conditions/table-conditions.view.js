@@ -152,8 +152,6 @@ class TableConditionsUI {
       table.view.showSelf();
     })
     this.form = jq.getElById(this.getFormSelector());
-    this.updateConditionsButton = jq.getElById(this.getUpdateConditionsButtonSelector());
-    this.updateConditionsButton.addEventListener('click', () => this.updateConditions());
     this.rules.forEach(rule => {
       jq.appendElem(this.form, this.getFormElement(rule));
       const el = jq.getElById(rule.rule);
@@ -179,8 +177,6 @@ class TableConditionsUI {
       this.table.view.replaceSpots(conditions.seatsPerTable, newConditions.seatsPerTable);
     }
     conditions = { ...newConditions };
-    
-    // UPDATE THE MODEL AND UI FOR UPDATED NUMBER OF SEAT POSITIONS
   }
 
   hideSelf() {
@@ -198,13 +194,12 @@ class TableConditionsUI {
   getSelfSelector = () => `conditions-container`;
   getPlayBlackJackButton = () => `play-blackjack`;
   getFormSelector = () => `conditions-form`;
-  getUpdateConditionsButtonSelector = () => `update-conditions`; 
 
   getTemplate = () => (
-    `<div class="conditions-container" id="conditions-container">
+    `<div class="conditions-container flex" id="conditions-container">
+      <h1>Game Conditions</h1>
       <form id="conditions-form" action="#"></form>
       <div class="buttons-wrapper flex">
-        <button id="update-conditions">Update Conditions</button>
         <button id="play-blackjack">Play</button>
       </div>
     </div>`
