@@ -6,7 +6,7 @@ class HandUI {
     this.originalOptions = [];
     jq.appendElem(parentElem, this.getTemplate(spotId, handId));
     this.self = jq.getElById(this.getSelfSelector(spotId, handId));
-    this.handHistory = jq.getElById(this.hetHandHistorySelector(spotId, handId));
+    this.handHistory = jq.getElById(this.getHandHistorySelector(spotId, handId));
     this.optionsContainer = jq.getElById(this.getOptionsContainerSelector(spotId, handId));
     if(isFromSplit) {
       this.addCard(firstCard);
@@ -14,13 +14,12 @@ class HandUI {
   }
 
   updateHistory = history => this.handHistory.innerHTML = history;
-
   addCard = ({ image }) => jq.appendElem(this.self, this.getCardTemplate(image));
 
   getSelfSelector = (spotId, handId) => `player-spot-${spotId}-hand-${handId}`;
   getOptionsContainerSelector = (spotId, handId) => `options-wrapper-spot-${spotId}-hand-${handId}`;
   getOptionSelector = (option) => `play-option-${option}-spot-${this.spotId}-hand-${this.handId}`;
-  hetHandHistorySelector = (spotId, handId) => `hand-history-${spotId}-hand-${handId}`;
+  getHandHistorySelector = (spotId, handId) => `hand-history-${spotId}-hand-${handId}`;
 
   displayOptions = (options) => {
     this.removeOptions();
@@ -55,6 +54,11 @@ class HandUI {
 
   split(card) {
     this.addCard(card)
+  }
+
+  addClassToImg(className) {
+    const images = this.self.getElementsByTagName('img');
+    images[0].classList.add(className);
   }
 
   getCardTemplate = (url, isHoleCard=false) => isHoleCard 

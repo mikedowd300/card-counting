@@ -93,11 +93,16 @@ body {
   margin: 4px 0;
 }
 
-.add-spot-button {
+.add-spot-button, .leave-spot-button {
+  display: flex;
   margin-top: 4px;
   padding: 2px 12px;
   font-size: 18px;
   border-radius: 4px;
+}
+
+.add-spot-button.hide, .leave-spot-button.hide {
+  display: none;
 }
 
 /* -------- messages --------*/
@@ -173,12 +178,20 @@ body {
   margin-bottom: -25%;
 }
 
+.player .hand img:first-of-type {  
+  margin-bottom: -12px;
+}
+
+.player .hand img.shift-down:first-of-type {  
+  margin-bottom: -40px;
+}
+
 .player .hand .options-container { 
   width: 100%;
   height: 30px;
   overflow: scroll;
   justify-content: center;
-  margin-top: 40px;
+  margin-top: 30px;
 }
 
 .player .hand .options-container .option { 
@@ -203,6 +216,7 @@ body {
 
 .player .betsize {
   margin: 0 4px;
+  margin-top: 10px;
 }
 
 .player .betsize-button {
@@ -214,7 +228,10 @@ body {
 .hand .hand-history {
   margin-bottom: -60px;
   margin-top: 40px;
-  color: red;
+  color: white;
+  font-size: 14px;
+  background-color: rgba(0, 0, 0, .5);
+  text-shadow: 2px 2px black;
 }
 
 /* -------- Insurance --------*/

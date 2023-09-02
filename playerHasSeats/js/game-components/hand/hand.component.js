@@ -184,6 +184,7 @@ class HandComponent {
   stay() {
     // console.log('STAY');
     this.view.updateOptionsDisplay(this.options);
+    this.view.addClassToImg('shift-down');
     this.isPlayed = true;
     this.methodsBag.playHandByHandId(this.id + 1);
     this.options = [];

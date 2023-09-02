@@ -153,6 +153,8 @@ class TableComponent {
     // console.log('PLACE_BETS', this.handsCount);
     this.dealer.view.showDealButton();
     this.dealer.view.dealButton.classList.remove('hide');
+    this.players.filter(player => !player.puppetMaster).forEach(player => player.view.showAddSpotButton());
+    this.players.filter(player => player.puppetMaster).forEach(player => player.view.showLeaveSpotButton());
     this.players.filter(player => player.brainType !== 'HUMAN').forEach(player => {
       player.betSize = player.hands[0].botBrain.resizeBet();
       player.view.betSize.innerHTML = player.getBetSize();
@@ -369,6 +371,8 @@ class TableComponent {
     this.clearCards();
     this.dealer.reset();
     shoe.shuffleCheck();
+    this.players.filter(player => !player.puppetMaster).forEach(player => player.view.hideAddSpotButton());
+    this.players.filter(player => player.puppetMaster).forEach(player => player.view.hideLeaveSpotButton());
     this.players.forEach(player => player.reset());
   }
 
