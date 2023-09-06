@@ -144,6 +144,7 @@ body {
   width: 100%;
   box-sizing: border-box;
   justify-content: space-around;
+  position: relative;
 }
 
 .dealer-container .buttons-container .deal-button {
@@ -158,6 +159,13 @@ body {
 .dealer .buttons-container .close-insurance-button.hide,
 .player .player-insurance.hide {
   display: none; 
+}
+
+.count-info {
+  position: absolute;
+  text-align: center;
+  top: 0;
+  right: 0;
 }
 
 /* -------- hand --------*/

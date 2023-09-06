@@ -19,6 +19,8 @@ class DealerUI {
     });
     this.insuranceButton = jq.getElById(this.getInsuranceButtonSelector());
     this.insuranceButton.addEventListener('click', () => methods.closeInsurance());
+    this.discardPercentageEl = jq.getElById(this.getDiscardPercentageSelector());
+    this.runningCountEl = jq.getElById(this.getRunningCountSelector());
   }
 
   getSelfSelector = () => 'dealer';
@@ -26,6 +28,8 @@ class DealerUI {
   getDealButtonSelector = () => `deal-button`;
   getInsuranceButtonSelector = () => `close-insurance-button`;
   getHoleCardSelector = () => 'hole-card';
+  getDiscardPercentageSelector = () => `discard-percentage`;
+  getRunningCountSelector = () => `running-count`;
 
   getCardTemplate = (url, isHoleCard=false) => isHoleCard 
     ? `<img src="./js/assets/card-back.jpg" id="hole-card">` 
@@ -60,11 +64,21 @@ class DealerUI {
     Array.from(this.cardsContainer.getElementsByTagName('img')).forEach(el => el.remove());
   }
 
+  updateCountInfo() {
+    this.discardPercentageEl.innerHTML = Math.round(shoe.getDecksRemaining() * 10)/10;
+    this.runningCountEl.innerHTML = shoe.getHiLoRunningCount();
+  }
+
   getTemplate = () => (
     `<div class="dealer flex" id="dealer">
       <div class="buttons-container flex">
         <button class="deal-button flex hide" id="deal-button">DEAL</button>
         <button class="close-insurance-button hide" id="close-insurance-button">CLOSE INSURANCE</button>
+        <div class="count-info">
+          <button class="show-count-button flex hide" id="show-count-button">SHOW COUNT</button>
+          <span id="discard-percentage"></span>
+          <span id="running-count"></span>
+        </div>
       </div>
       <div class="cards-container flex" id="dealer-cards-container"></div>
     </div>`

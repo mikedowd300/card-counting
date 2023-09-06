@@ -206,8 +206,6 @@ class TableComponent {
       });
     this.trueCountHistory.push(shoe.getHiLoTrueCount());
     this.runningCountHistory.push(shoe.hiLoRunningCount);
-    // const decksRemaining = (Math.round((shoe.cards.length * 100)/(shoe.cards.length + shoe.discardTray.length)))/100
-    // console.log(shoe.getHiLoRunningCount(), shoe.getHiLoTrueCount(), shoe.cards.length, shoe.discardTray.length, decksRemaining * conditions.decksPerShoe);
     // console.log('DEAL');
     this.handsCount++;
     this.dealer.view.hideDealButton();
@@ -223,7 +221,7 @@ class TableComponent {
       dealer.dealSelfCard();
       // shoe.cards.push(new Card('H', 0));
       dealtInPlayers.forEach(player => player.hands[0].dealCard(shoe.deal()));
-      // shoe.cards.push(new Card('H', 0));
+      // shoe.cards.push(new Card('H', 12));
       dealer.dealHoleCard();
       flow.setStep(dealer.showsAce() ? 'INSURANCE' : 'DEALER_BLACKJACK_PAYOUT');
       this.playStep();
@@ -271,7 +269,6 @@ class TableComponent {
   dealerBlackJackPayout() {
     // console.log('DEALER_BLACKJACK_PAYOUT');
     if(this.dealer.hasBlackJack()) {
-      this.dealer.flipHoleCard();
       this.dealtInPlayers
         .forEach(player => { 
           player.payBet(!player.hands[0].isBlackJack() ? (-(player.hands[0].bet)) : 0);
@@ -321,6 +318,7 @@ class TableComponent {
     const player = this.dealtInPlayers.filter(player => !player.hasPlayed)[0];
     if(player) {
       player.playHandByHandId(0);
+      this.dealer.view.updateCountInfo();
     } else {
       flow.setStep('PLAY_DEALERS_HAND');
       this.playStep();
@@ -377,6 +375,7 @@ class TableComponent {
   }
 
   playStep() {
+    this.dealer.view.updateCountInfo();
     switch(flow.getCurrentStep()) {
       case 'PLACE_BETS':
         this.placeBets();

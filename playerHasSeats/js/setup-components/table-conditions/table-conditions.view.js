@@ -54,7 +54,7 @@ class TableConditionsUI {
       },
       {
         rule: 'canDoubleSoft11AfterSplitting10s',
-        title: "can Double Soft 11 After splitting 10s",
+        title: "Can Double Soft 11 After splitting 10s",
         value: conditions.canDoubleSoft11AfterSplitting10s,
         elementType: 'checkbox'
       },
@@ -143,11 +143,14 @@ class TableConditionsUI {
         elementType: 'text'
       },
     ];
+    this.basicStrategySettings = { ...conditions.basicStrategySettings };
     jq.prependElem(parentElem, this.getTemplate());
     this.self = jq.getElById(this.getSelfSelector());
     this.playBlackJackButton = jq.getElById(this.getPlayBlackJackButton());
     this.playBlackJackButton.addEventListener('click', () => {
-      this.updateConditions()
+      this.updateConditions();
+      this.updateBasicStrateSettings();
+      shoe = new ShoeService();
       this.hideSelf();
       table.view.showSelf();
     })
@@ -161,6 +164,11 @@ class TableConditionsUI {
         targetRule.value = value;
       })
     })
+    this.basicStrategyForm = jq.getElById(this.getBasicStrategyFormSelector()); 
+    this.basicStrategySettings.betSpread
+      .forEach((value, trueCount) => jq.appendElem(this.basicStrategyForm, this.getBetSpreadTemplate(trueCount, value)))
+    this.insuranceAtElem = jq.getElById(this.getInsuranceAtSelector()); 
+    this.bettingUnitElem = jq.getElById(this.getBettingUnitSelector()); 
   }
 
   updateConditions() {
@@ -179,6 +187,24 @@ class TableConditionsUI {
     conditions = { ...newConditions };
   }
 
+  updateBasicStrateSettings() {
+    conditions.basicStrategySettings = {
+      ...this.basicStrategySettings, 
+      insuranceAt: this.insuranceAtElem.value,
+      bettingUnit: this.bettingUnitElem.value,
+      betSpread: this.getBetSpreadValues(),
+    }
+  };
+
+  getBetSpreadValues() {
+    let values = [];
+    for(let count = 0; count < this.basicStrategySettings.betSpread.length; count++) {
+      const elem = jq.getElById(this.getBetSpreadSelector(count));
+      values.push(elem.value);
+    }
+    return values;
+  }
+
   hideSelf() {
     if(this.self) {
       this.self.classList.add('hide')
@@ -194,11 +220,26 @@ class TableConditionsUI {
   getSelfSelector = () => `conditions-container`;
   getPlayBlackJackButton = () => `play-blackjack`;
   getFormSelector = () => `conditions-form`;
+  getBasicStrategyFormSelector = () => `basic-strategy-form`;
+  getInsuranceAtSelector = () => `insurance-at`;
+  getBettingUnitSelector = () => `betting-unit`;
+  getBetSpreadSelector = (trueCount) => `bet-spread-${trueCount}`;
 
   getTemplate = () => (
     `<div class="conditions-container flex" id="conditions-container">
       <h1>Game Conditions</h1>
       <form id="conditions-form" action="#"></form>
+      <h1 class="strategy-title">Basic Strategy Settings</h1>
+      <form id="basic-strategy-form" action="#">
+        <div class="form-element flex text">
+          <input type="text" id="betting-unit" name="betting-unit" value="${this.basicStrategySettings.bettingUnit}">
+          <label for="betting-unit">Betting Unit</label>
+        </div>
+        <div class="form-element flex text">
+          <input type="text" id="insurance-at" name="insurance-at" value="${this.basicStrategySettings.insuranceAt}">
+          <label for="insurance-at">Accept insurance @ </label>
+        </div>
+      </form>
       <div class="buttons-wrapper flex">
         <button id="play-blackjack">Play</button>
       </div>
@@ -213,4 +254,11 @@ class TableConditionsUI {
       <label for="${rule}">${title}</label>
     </div>`
   );
+
+  getBetSpreadTemplate = (trueCount, value) => (
+    `<div class="form-element flex text">
+      <input type="text" id="bet-spread-${trueCount}" name="bet-spread-${trueCount}" value="${value}">
+      <label for="bet-spread-${trueCount}">True Count @ ${trueCount}, bet: </label>
+    </div>`
+  )
 }
