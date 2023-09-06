@@ -26,6 +26,14 @@ class PlayerUI {
     this.acceptInsuranceButton.addEventListener('click', () => this.acceptInsurance());
   }
 
+  hideAddSpotButton() {
+    this.addSpotButton.classList.add('hide');
+  }
+
+  showAddSpotButton() {
+    this.addSpotButton.classList.remove('hide');
+  }
+
   declineInsurance() {
     this.hideInsuranceModal();
     this.methodsBag.updateInsuranceResponses();

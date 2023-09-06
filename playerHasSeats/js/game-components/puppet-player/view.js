@@ -26,6 +26,14 @@ class PuppetPlayerUI {
     this.acceptInsuranceButton.addEventListener('click', () => acceptInsurance());
   }
 
+  hideLeaveSpotButton() {
+    this.leaveSpotButton.classList.add('hide');
+  }
+
+  showLeaveSpotButton() {
+    this.leaveSpotButton.classList.remove('hide');
+  }
+
   declineInsurance() {
     this.hideInsuranceModal();
     this.methodsBag.updateInsuranceResponses();
@@ -52,8 +60,6 @@ class PuppetPlayerUI {
   showInsuranceModal = () => this.insuranceModal.classList.remove('hide');
   updateBetAmount = bet => this.betSize.innerHTML = bet;
   removeHands = () => Array.from(this.handsElem.getElementsByClassName('hand')).forEach(el => el.remove());
-
-  // <button class="leave-spot-button"> SHOULD ONLY BE VISIBLE DURING PLACE_BETS - WIP
 
   getTemplate = ({ id, name, bankroll, bet }) => (
     `<div class="player flex" id="player-${ id }">

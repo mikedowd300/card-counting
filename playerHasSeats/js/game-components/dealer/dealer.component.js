@@ -76,6 +76,7 @@ class DealerComponent {
   mustHit = () => this.isSoft17() ? !conditions.dealerStaysOnSoft17 : this.getValue() < 17;
 
   playHand() {
+    this.view.updateCountInfo();
     let unpaidHandsCount = 0;
     this.methodsBag.getPlayers().forEach(player => player.hands.forEach(hand => {
       if(!hand.hasBeenPaid) {
@@ -87,5 +88,6 @@ class DealerComponent {
       this.cards.push(card);
       this.view.addCard(card);
     }
+    this.view.updateCountInfo();
   }
 }

@@ -38,6 +38,7 @@ class HandComponent {
       'HOME_MADE': new HomeMadeBot(),
       'BASIC_STRATEGY': new BasicStrategyBot(),
       'NEVER_BUST': new NeverBustBot(),
+      'ILLUSTRIOUS_18': new Illustrious18Bot(),
     };
     return botMap[type];
   }
@@ -184,6 +185,7 @@ class HandComponent {
   stay() {
     // console.log('STAY');
     this.view.updateOptionsDisplay(this.options);
+    this.view.addClassToImg('shift-down');
     this.isPlayed = true;
     this.methodsBag.playHandByHandId(this.id + 1);
     this.options = [];

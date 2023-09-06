@@ -113,16 +113,33 @@ class PuppetPlayerComponent {
     this.insuranceBetSize = 0;
   }
 
+//   reset() {
+//     this.view.removeHands();
+//     if(this.getBankroll() > 0) {
+//       const betSize = Math.min(this.getBankroll(), this.betSize);
+//       this.hands = [new HandComponent(this.brainType, this.view.handsElem, this.methodsBag, this.betSize, this.id, 0)];
+//       this.hasInsurance = false;
+//       this.insuranceBetSize = 0;
+//       this.hasPlayed = false;
+//     } else {
+//       this.methodsBag.leaveSpot(this.id);
+//     }
+//   }
+
   reset() {
-    this.view.removeHands();
+  this.view.removeHands();
     if(this.getBankroll() > 0) {
+    if(this.brainType !== "HUMAN") {
+      this.betSize = this.hands[0].botBrain.resizeBet();
+    }
       const betSize = Math.min(this.getBankroll(), this.betSize);
-      this.hands = [new HandComponent(this.brainType, this.view.handsElem, this.methodsBag, this.betSize, this.id, 0)];
+    // UPDATE THE UI TO SHOW THE UPDATED BETSIZE
+    this.hands = [new HandComponent(this.brainType, this.view.handsElem, this.methodsBag, this.betSize, this.id, 0)];
       this.hasInsurance = false;
       this.insuranceBetSize = 0;
       this.hasPlayed = false;
     } else {
-      this.methodsBag.leaveSpot(this.id);
+    this.methodsBag.leaveSpot(this.id);
     }
   }
 

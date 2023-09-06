@@ -28,6 +28,7 @@ class TableUI {
   getSpotSelector = id => `spot-${id}`;
   getOpenSpotSelector = id => `open-${id}-spot`;
   getHumanSpotButtonSelector = (id, fromCode = false) => `human-${id}-spot-button`;
+  getIllustrious18BotSpotButtonSelector = id => `illustrious-18-${id}-spot-button`;
   getBasicStrategyBotSpotButtonSelector = id => `basic-strategy-${id}-spot-button`;
   getNeverBustBotSpotButtonSelector = id => `never-bust-${id}-spot-button`;
   getHomeMadeBotSpotButtonSelector = id => `home-made-${id}-spot-button`;
@@ -55,6 +56,12 @@ class TableUI {
     >
       <div class="open-spot flex" id="open-${id}-spot">
         <button class="human-spot-button human" id="human-${id}-spot-button">Human</button>
+        <button 
+          class="illustrious-18-spot-button basic-strategy" 
+          id="illustrious-18-${id}-spot-button"
+        >
+          The Illustrious 18
+        </button>
         <button 
           class="basic-strategy-spot-button basic-strategy" 
           id="basic-strategy-${id}-spot-button"
@@ -84,10 +91,12 @@ class TableUI {
       jq.prependElem(parentElem, this.getSpotTemplate(id));
       const humanButton = jq.getElById(this.getHumanSpotButtonSelector(id, fromCode));
       const basicStrategyBotButton = jq.getElById(this.getBasicStrategyBotSpotButtonSelector(id));
+      const illustrious18BotButton = jq.getElById(this.getIllustrious18BotSpotButtonSelector(id));
       const neverBustBotButton = jq.getElById(this.getNeverBustBotSpotButtonSelector(id));
       const homeMadeBotButton = jq.getElById(this.getHomeMadeBotSpotButtonSelector(id));
       humanButton.addEventListener('click', () => this.spotButtonClickCallback(id, 'HUMAN', fromCode));
       basicStrategyBotButton.addEventListener('click', () => this.spotButtonClickCallback(id,'BASIC_STRATEGY'));
+      illustrious18BotButton.addEventListener('click', () => this.spotButtonClickCallback(id,'ILLUSTRIOUS_18'));
       neverBustBotButton.addEventListener('click', () => this.spotButtonClickCallback(id,'NEVER_BUST'));
       homeMadeBotButton.addEventListener('click', () => this.spotButtonClickCallback(id,'HOME_MADE'));
     }

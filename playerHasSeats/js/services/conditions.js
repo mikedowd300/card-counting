@@ -21,7 +21,7 @@ class ConditionsService {
       canSplitForLess: true,
       canSurrender: false,
       canSurrenderAfterSplit: false,
-      useDealLoop: true,
+      useDealLoop: false,
       dealLoopIterations: 10000,
       cardsBurnedPerShoe: 1,
       decksPerShoe: 2,
@@ -31,6 +31,13 @@ class ConditionsService {
       startingBankroll: 5000,
       shufflePoint: .7,
       blackJackPaysRatio: 3/2,
+      basicStrategySettings: {
+        insuranceAt: 3,
+        bettingUnit: 10,
+        addHandsAt: 2,
+        decreaseHandsAt: 1,
+        betSpread: [ 1, 1, 2, 3, 4, 4, 4, 4, 4],
+      }
     }
   };
 }

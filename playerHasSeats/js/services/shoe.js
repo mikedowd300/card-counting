@@ -1,11 +1,13 @@
 class ShoeService {
   constructor() {
     this.suites = ['S', 'H', 'C', 'D'];
-    this.cards = this.createShoe();
+    this.cards = [];
     this.hiLoRunningCount = 0;
     this.hiLoTrueCount = 0;
     this.discardTray = [];
     this.shoeCount = 0;
+    this.isFreshShoe = true;
+    this.createShoe();
   }
 
   createShoe() {
@@ -13,7 +15,8 @@ class ShoeService {
     for (let d = 0; d < conditions.decksPerShoe - 1; d++) {
       shoe = [...shoe, ...this.createDeck()];
     }
-    return this.shuffle(shoe);
+    this.discardTray = [...shoe];
+    this.shuffleCheck();
   }
 
   createDeck() {
@@ -33,6 +36,10 @@ class ShoeService {
       // console.log('SHUFFELING', this.discardTray.length / fullShoeLength);
       this.cards = this.shuffle([...this.cards, ...this.discardTray]);
       this.discardTray = [];
+      this.isFreshShoe = true;
+      this.burn();
+    } else {
+      this.isFreshShoe = false;
     }
   }
 
@@ -40,10 +47,9 @@ class ShoeService {
   shuffle(shoe, limit = 52 * conditions.decksPerShoe) {
     const newShoe = [];
     let oldShoe = [ ...shoe ];
-    const mikeRandom = (new Date().getMilliseconds())/1000;
-    // console.log(mikeRandom, limit);
+    const mikeRandom = (new Date().getMilliseconds());
     for (let i = limit - 1; i >= 0; i--) {
-      const index = Math.floor(Math.random() * i * mikeRandom);
+      const index = Math.ceil(Math.random() * mikeRandom) % (oldShoe.length);
       newShoe.push(oldShoe[index]);
       oldShoe = [...oldShoe.slice(0, index), ...oldShoe.slice(index + 1)];
     }

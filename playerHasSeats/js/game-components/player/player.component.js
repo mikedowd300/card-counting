@@ -123,6 +123,9 @@ class PlayerComponent {
   reset() {
     this.view.removeHands();
     if(this.getBankroll() > 0) {
+      if(this.brainType !== "HUMAN") {
+        this.betSize = this.hands[0].botBrain.resizeBet();
+      }
       const betSize = Math.min(this.getBankroll(), this.betSize);
       // UPDATE THE UI TO SHOW THE UPDATED BETSIZE
       this.hands = [new HandComponent(this.brainType, this.view.handsElem, this.methodsBag, this.betSize, this.id, 0)];
