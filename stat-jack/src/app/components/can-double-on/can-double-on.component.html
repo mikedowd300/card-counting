@@ -1,0 +1,46 @@
+<div class="can-double-on-wrapper">
+  <div class="condition-wrapper">
+    <div *ngFor="let key of aceKeys" class="condition">
+      <span class="vertically-center">{{ first2Cards[key].description }}</span>
+      <span class="checkbox-wrapper">
+        <input
+          type="checkbox"
+          [(ngModel)]="first2Cards[key].value"
+          (change)="handleDoubleOnChange(key)"
+        />
+      </span>
+    </div>
+  </div>
+  <div class="condition-wrapper">
+    <div *ngFor="let key of nonAceKeys" class="condition">
+      <span class="vertically-center">{{ first2Cards[key].description }}</span>
+      <span class="checkbox-wrapper">
+        <input
+          type="checkbox"
+          [(ngModel)]="first2Cards[key].value"
+          (change)="handleDoubleOnChange('canOnlyDoubleOn','first2Cards')"
+        />
+      </span>
+    </div>
+    <div class="condition">
+      <span class="vertically-center">{{ DS21.description }}</span>
+      <span class="checkbox-wrapper">
+        <input
+          type="checkbox"
+          [(ngModel)]="DS21.value"
+          (change)="handleDoubleOnChange('DS21', 'DS21')"
+        />
+      </span>
+    </div>
+    <div class="condition">
+      <span class="vertically-center">{{ DS21A.description }}</span>
+      <span class="checkbox-wrapper">
+        <input
+          type="checkbox"
+          [(ngModel)]="DS21A.value"
+          (change)="handleDoubleOnChange('DS21A', 'DS21A')"
+        />
+      </span>
+    </div>
+  </div>
+</div>

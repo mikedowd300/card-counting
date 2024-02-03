@@ -1,0 +1,107 @@
+<div class="wonging-container">
+  <h2>Create Edit or View Unit Resizing Strategies</h2>
+  <div class="mode-selections-wrapper">
+    <button 
+      class="add-edit-mode" 
+      [class.selected]="mode === 'add-edit-mode'" 
+      (click)="selectMode('add-edit-mode')"
+    >Open a Chart
+    </button>
+    <button 
+      class="delete-mode" 
+      [class.hidden]="false"
+      [class.selected]="mode === 'delete-mode'" 
+      (click)="selectMode('delete-mode')"
+    >Delete
+    </button>
+    <button 
+      class="select-mode" 
+      [class.hidden]="false"
+      [class.selected]="mode === 'select-mode'" 
+      (click)="selectMode('select-mode')"
+    >Select
+    </button>
+  </div>
+  <div class="wonging-wrapper" *ngIf="mode === 'add-edit-mode'">
+    <p class="explanation">
+     <i>Wonging</i> is for adding spots <b>in addition to</b> a players first spot. To set up wonging for a players <i>first</i> spot, use the <i>Bet Spread</i> page. 
+    </p>
+    <p class="directions">Use the dropdown to view existing charts or edit charts you have created. Create a new chart either from an existing chart or from scratch.</p>
+    <div class="selector-and-button-wrapper">
+      <div class="select-wrapper">    
+        <label></label>
+        <select name="" id="chart-maker-selector" (change)="handleSelectStrategy($event)">
+          <option disabled selected>Select a Wonging Strategy</option>
+          <option *ngFor="let key of wongingService.configKeys" [value]="key">{{key}}</option>
+        </select>
+      </div>
+      <button *ngIf="newTitle" (click)="addStrategyToLS()">Save {{ newTitle }}</button>
+    </div>
+  </div>
+  <div *ngIf="selectedWongingConfigTitle" class="new-title">
+    <span>Change the title to create a new wonging strategy</span>
+      <input
+        type="text"
+        placeholder="Enter new title here"
+        [(ngModel)]="newTitle"
+     />
+  </div>
+  <div *ngIf="selectedWongingConfig" class="wong-content">
+    <div class="spot-index" *ngFor="let additionalSpot of selectedWongingConfig; index as i">
+      <div class="spot-title-wrapper">
+        <p *ngIf="additionalSpot.length > 0" class="spot-title">{{cardinalMap[i + 1]}} additional spot</p>
+        <div class="column-button-wrapper">
+          <button 
+            *ngIf="i === 0 && newTitle && selectedWongingConfig[0].length > 1" 
+            class="column-button dec" (click)="deleteColumn()"
+          >
+            Delete Column
+          </button>
+          <button 
+            *ngIf="i === 0 && newTitle && selectedWongingConfig[0].length < 10" 
+            class="column-button inc" (click)="addColumn()"
+          >
+            Add Column
+          </button>
+        </div>
+      </div>
+      <div class="shoe-section">
+        <button
+          (click)="removeSpot()" 
+          class="dec-spot" 
+          *ngIf="i + 1 === selectedWongingConfig.length && selectedWongingConfig.length > 1 && newTitle"
+        >
+          Remove Spot
+        </button>
+        <div class="wong-by-section" *ngFor="let section of additionalSpot; index as ind">
+          <p 
+            *ngIf="additionalSpot.length > 1" 
+            class="section-title"
+          >
+            {{cardinalMap[ind + 1]}} 1/{{additionalSpot.length}} of shoe
+          </p>
+          <div class="section-content">
+            <div class="label-input-wrapper">
+              <label>Enter at:</label>
+              <input class="enter" type="number" [(ngModel)]="section.enter">
+            </div>
+            <div class="label-input-wrapper">
+              <label>Exit at:</label>
+              <input class="inc-spot" class="exit" type="number" [(ngModel)]="section.exit">
+            </div>
+          </div>
+        </div>
+        <button
+          (click)="addSpot()" 
+          class="inc-spot" 
+          *ngIf="i + 1 === selectedWongingConfig.length && newTitle && selectedWongingConfig.length < 6"
+        >
+          Add Spot
+        </button>
+      </div>
+    </div>
+    <p *ngIf="selectedWongingConfig.length === 0" class="no-config">
+      <i>{{selectedWongingConfigTitle}}</i> is the default Wonging strategy.
+    </p>
+  </div>
+</div>

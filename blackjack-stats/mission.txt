@@ -1,0 +1,102 @@
+Create a program that will run simulations of millions(?) of blackjack hands, played by customizable bots, and evaluate every concievable stat. 
+
+The data should be used to:
+- find (or validate) the optial way to play.
+- evaluate the implementation of cover plays in play and betting deviations
+- Cover plays include:
+ - retro-sizing the betting unit based on the count at the end of the first hand (single and double deck)
+ - tipping
+ - adding or removing (sprinkling) "meaningless" smaller chips on a bet - analysis should be done to determine the mathematical bounderies of "meaningless" chips.
+ - not splitting ten when the count calls for it
+
+Tools for finding optimal ways to play inlude: 
+- stacking the deck
+- comparing overall strategies by comparing results from bots
+- comparing specific play deviations between bots and diaplaying the results
+- analysis of actual win/loss averages with expected averages (thus changing the expectations).
+
+The UI will not play the game visually. 
+- It will run the simulation behind the scenes. 
+- The simulation's, or experiment's, sole purpose is to produce data for analysis. 
+- The user will set up the "experiments".
+
+The data will include the history of every hand. 
+- An array of the bot's / player's decisions
+- Final outcome: BUST, WIN, LOSE, PUSH
+- cards dealt
+- dealer's upcard
+- dealers final hand
+- true count when hand starts
+- true count when hand ends
+- bankroll when hand starts
+- bankroll when hand ends
+- hand index from shoe
+- size of shoe
+- The shoe ID
+- The player ID
+
+The data of each shoe should also be analyzable. It isn't clear what meaningful data could be mined and used to form what strategy (if any), but that could change if a patterm is discovered, especially if the pattern can be "controlled" or somehow used by a player.
+Data could include:
+- The win / loss stats of each shoe. 
+- The money won / lost stats of a each shoe.
+- Some TBD stat extraplatable from high card / low card count distribution.
+- ??? 
+
+The data will NOT be stored long term in a data base, it will be lost by a subsequent simulation or by hitting refresh. Multiple "experiments" can be run on the same data set. This may change, but not as MVP. 
+
+The user should be able to compare results of 2 or more players at the same table.
+
+The user should be able to add or abandon additional seats as part of the players strategy in accordance to restrictions made by casinos on doing so.
+
+The user should be able to run simulations with a customized stacked deck. The idea here is that by adding or eliminating a cards of a particular value, it's benefit/detriment can be quantified. This could be used to devise a customized counting system.
+
+The user should be able to create, save and retrieve charts for a bot to play.
+- charts will be saved in local storage
+- There should be a UI to create a chart
+- There should be a UI to select any hard coded or stored chart.
+- There should be an option to delete a chart.
+
+The user should be able to compare different strategies played against each other.
+- The user should be able to flag 2 or more playing decisions, played differently by 2 or more bots, and filter the data to display the results of those instances.
+- The deltas in strategy should correlate to a box on the strategy chart
+- The data should be able to be further filtered by count by the user
+- Other filters?
+
+The user should be able to create, store and retrieve betting strategies when they are tied to a count.
+
+The user can implement beting progressions.
+
+The user can implement tipping amounts and strategies based on,
+- After a blackjack
+- When a dealer joins / leaves
+- At the beginning of every nth shoe
+- After every X hands
+
+The user should be able to set rules for increasing and decreasing the betting unit.
+
+The user should be able to customize, store (in local storage) and retrieve table conditions.
+
+The user should be able to create, store and retrieve strategies for wonging in, and sitting out in accordance with a casinos rules for late entry into a shoe.
+- Strategy would involve entry count, exit count, and decks left to make entry reasonable
+- stats should be kept for: (this might need to be done in the shoe stats AND player/bot stats) 
+  - number of the hands it takes to wong in  and 
+  - how many hands are played before the exit strategy makes a bot leaves a shoe
+  - how many shoes never even see any play
+
+The user should be able to customize, store (in local storage) and retrieve strategies for insurance.
+
+The user should have the option to view a chart of a bot's winnings history.
+
+Multiple bots should be able to exist on the same chart through color coding.
+
+The user chould be able to create an expectation, or expectation range, per hand.
+
+The user should be able to use the data visually show hands played on an actual table, with players joining and leaving as well as player decisions.
+
+The HiLo count will come out of the box, but the users ability to create a custom betting system would by MVP +1
+
+The count should be:
+  - The HiLo count will come out of the box
+  - the users ability to create a custom betting system would by MVP +1
+  - optionaly kept to the nearest half
+  - optionaly rounded up

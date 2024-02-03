@@ -1,0 +1,187 @@
+Notes:
+- The UI will be created with Angular
+- There is NO back end needed
+- Custom configs can be stored in local storage
+- No need for state management
+- Card images will be stored in an asset folder
+- services
+  - playing the game
+  - the shoe
+  - managing playing strategies
+  - managing betting strategies
+  - managing tipping strategies
+  - managing cover strategies
+  - managing local storage
+  - managing conditions
+  - managing the simulation data
+  - managing stacking the deck
+  - charting bot(s) results
+  - tracking play deviation results
+- Flows
+  - starting dashboard
+  - starting a game, setting each players
+    - bankrolls
+    - strategies
+      - playing
+      - betting
+      - deviating
+      - tipping
+      - bet unit resize
+      - adding / abandoning seats
+  - setting / saving / retrieving table conditions
+  - creating / saving / retrieving play charts
+  - creating / saving / retrieving deviation charts
+  - creating / saving / retrieving adding / abandoning seats strategy
+  - Use data to look for cover opportunities
+   - double on 12?
+  - The BJE should make playing decisions with no code other than the playing strategy chart itself.
+  - Complicated strategies may be hard coded, but this is not possible with custom strategies made by the user.
+
+  MODELS (WIP)
+  class SimData {
+    rounds: Rounds[]
+  }
+
+  DEPENDENCIES:
+  - Stories analysing or somehow using data ae dependant on that data existing, and data comes from a functional BJE.
+  - Blackjack stories to create charts may not be dependant ON THE BJE, but they are not testable without it.
+  - The BJE can not be created until default playing / betting / resizing / wonging / tipping / adding seats / covering strategies exist.
+
+  **************************
+  Where does "rounds per simulations" live?
+  **************************
+
+  STORIES:
+  1) Create the UI layout for the landing page dashboard
+    - Favor less realestate to the title and more to the components of the dashboard
+    - Components are currently just a name and a bordered box
+    - layout should be made responsive down to mobile with verticle rotation
+    - components include buttons to connect to:
+      - start new simulation - ** done **
+      - show stats (if a simulation exists) - ** NOTE ** This button does not exist on this page. It will (probably) exist on a new route which will not exist until the data has been generated
+      - create new betting chart - ** done **
+      - create new playing strategy - ** done **
+      - create new tipping strategy - ** done **
+      - create new bet resizing strategy - ** done **
+      - create new add/abandon seat strategy - ** done **
+      - create new wonging strategy - ** done **
+      - create new deviation chart - ** done **
+      - create new table conditions config - ** done **
+      - create new counting condition config - ** done **
+      ** COMPLETE **
+
+  2) Click any component on the dashboard should open a full screen modal.
+    - modal component should be reusable, the content will be projected - ** done **
+    - modal should contain an upper left "X" to close the modal - ** done **
+      ** COMPLETE **
+
+  3) Create Service to make Table Conditions profiles 
+    - Begin Local Storage service - ** done **
+    - create default table conditions config - ** done **
+    - create methods to customize a config
+    - create methods to save / update / retrieve table conditions configs
+    - no UI other than what is necessary to invoke the service - ** done **
+    - conditions include:  ** done **
+      - SI7 (dealer stays on soft 17)
+      - RSA (can resplit Aces)
+      - HSA (can hit split aces)
+      - DSA (can double split aces)
+      - DAS ( can double after split)
+      - DS21 (can double a soft 21 after splitting tens)
+      - DS21A (can double a soft 21 after splitting aces)
+      - DA2 ( can double any 2 cards)
+        - canOnlyDoubleOn: [10, 11]
+        - DSH (can double soft hands)
+      - PAYS
+        - 3/2
+        - 6/5
+        - 1/1
+      - Surrender
+        - early surrender
+        - late surrender
+      - SeatsPerTable
+      - decksPerShoe
+      - cardsBurnedPerShoe
+      - minimum table bet
+      - maximum table bet
+      - shufflePoint
+
+  3B) Create UI for Adding / Editing / Deleting a Table Conditions Profiles
+
+  4) Create / store / retrieve Player Profiles
+    - startingBankroll
+    - Profile Name
+    - Betting Unit
+    - Betting Strategy
+    - Playing Strategy
+    - Deviation Strategy
+    - Resizing Strategy
+    - Wonging Strategy
+    - Tipping Strategy
+    - Covering Strategy
+    - other?
+
+  5) Create Betting Strategy Service 
+    - create methods to customize a config
+    - create methods to create / save / retrieve configs from local storage
+    - create default strategy
+
+  6) Create Playing Chart Service
+    - create methods to customize charts
+    - create methods to create / save / retrieve configs from local storage
+    - create default strategy
+
+  7) Create Deviation Chart Service
+    - create methods to customize charts
+    - create methods to create / save / retrieve configs from local storage
+    - create default strategy
+
+  8) Create Resizing Strategy Service
+    - create methods to customize a strategy even if its none at all
+    - create methods to create / save / retrieve configs from local storage
+    - create default strategy
+
+  9) Create Wonging Strategy Service
+    - create methods to customize a strategy even if its none at all
+    - create methods to create / save / retrieve configs from local storage
+    - create default strategy (use the one from "The Blackjack Life")
+    - Wonging strategies should consider:
+      - at what count to join a table
+      - how much of the deck should remain to consider joining
+      - at what count to exit a game
+      - if the same game should can be re-entered
+      - Wonging is subject to no mid-shoe entry
+
+  10) Create Tipping Strategy Service
+    - create methods to customize a strategy even if its none at all
+    - create methods to create / save / retrieve configs from local storage
+    - create default strategy (never tip)
+    - Tipping scenarios should include:
+      - every x number of hands 
+      - every x number of hands above a certain count,
+      - every x number of shoes,
+      - following a blackjack, 
+      - when a dealer leaves, 
+      - when a dealer joins, 
+      - any combination of the above 
+
+  11) Create Covering Strategy Service
+    - create methods to customize a strategy even if its none at all
+    - create methods to create / save / retrieve configs from local storage
+    - create default strategy
+
+  12) Create the shoe service
+    - Create random a random shuffle based on:
+    - The discard tray will store cards just like a real casino and the discards will be the starting point of a new shoe for every shuffle.
+    - Store shuffled shoes in local storage for each deck size, at the end of a simulation (where the shoe will be reordered for every shuffle), put the shoe back into local storage.
+    - The default shoe to use will be from local storage, but in the event one does not exist, then a new shoe will be created from:
+      - Math.random()
+      - The number that is the thousandth of the current second
+    - The shoe will keep track of the running count, the out-of-the-box system will be HiLo since the deviation charts are so well researched.
+    - MVP+1 may include other counting systems, even home-made ones.
+    - The shoe should be able to be tested for "wongability", this (most likely) means that any show can be analysed for how many hands could be played out of a shoe depending on the wonging strategy.
+
+  13) Store card images in an asset folder 
+   - prefer SVGs over .png or .jpg, 
+   - this can be updated later with better images
+   ** IS THIS EVEN NEEDED FOR MVP ***

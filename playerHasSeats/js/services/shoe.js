@@ -4,10 +4,27 @@ class ShoeService {
     this.cards = [];
     this.hiLoRunningCount = 0;
     this.hiLoTrueCount = 0;
+    this.aceCount = conditions.decksPerShoe * 4;
     this.discardTray = [];
     this.shoeCount = 0;
     this.isFreshShoe = true;
+    this.handsCount = 0;
     this.createShoe();
+  }
+
+  getAceRatio() {
+    const cardsDealt = (conditions.decksPerShoe * 52) - (this.cards.length + conditions.cardsBurnedPerShoe);
+    const expectedAcesPlayed = Math.round(cardsDealt / 13);
+    const expectedAcesRemaining = (conditions.decksPerShoe * 4) - expectedAcesPlayed;
+    const aceSurplus = this.aceCount - expectedAcesRemaining;
+    // if(cardsDealt < 73 && cardsDealt > 59) {
+    //   console.log(aceSurplus, aceSurplus === 0 
+    //     ? expectedAcesRemaining 
+    //     : Math.round((aceSurplus * 100) / expectedAcesRemaining) + expectedAcesRemaining);
+    // }
+    return aceSurplus === 0 
+      ? expectedAcesRemaining 
+      : Math.round((aceSurplus * 100) / expectedAcesRemaining) + expectedAcesRemaining;
   }
 
   createShoe() {
@@ -33,10 +50,12 @@ class ShoeService {
     const fullShoeLength = 52 * conditions.decksPerShoe;
     const isShuffleTime = (this.discardTray.length / fullShoeLength) >= conditions.shufflePoint;
     if(isShuffleTime) {
-      // console.log('SHUFFELING', this.discardTray.length / fullShoeLength);
+      // console.log(this.discardTray.length / 13);
       this.cards = this.shuffle([...this.cards, ...this.discardTray]);
       this.discardTray = [];
       this.isFreshShoe = true;
+      this.handsCount = 0;
+      this.aceCount = conditions.decksPerShoe * 4;
       this.burn();
     } else {
       this.isFreshShoe = false;
@@ -63,6 +82,7 @@ class ShoeService {
     const card = this.cards.pop();
     this.setHiLoRunningCount(card.hiLoCountValue);
     this.setHiLoTrueCount();
+    this.updateAceCount(card.cardValue);
     return card;
   };
 
@@ -75,6 +95,7 @@ class ShoeService {
   flipHoleCard(card) {
     card.isHoleCard = false;
     this.setHiLoRunningCount(card.hiLoCountValue);
+    this.updateAceCount(card.cardValue);
     this.setHiLoTrueCount();
   }
 
@@ -90,13 +111,21 @@ class ShoeService {
     this.discardTray = [ ...this.discardTray, ...discards];
   }
 
-  getDecksRemaining = () => this.cards.length / 52
+  getDecksRemaining = () => (this.cards.length + conditions.cardsBurnedPerShoe) / 52;
 
   getHiLoRunningCount = () => this.hiLoRunningCount;
 
   setHiLoRunningCount = count => this.hiLoRunningCount += count;
 
-  getHiLoTrueCount = () => Math.round(this.hiLoTrueCount);
+  getHiLoTrueCount = () => Math.floor(Math.round(this.hiLoTrueCount * 10) / 10);
 
   setHiLoTrueCount = () => this.hiLoTrueCount = this.hiLoRunningCount / this.getDecksRemaining();
+
+  updateAceCount = cardValue => {
+    if(cardValue === 1) {
+      this.aceCount -= 1;
+    }
+  };
+
+  getTrueAceCount = () => Math.round(((this.aceCount / this.getDecksRemaining()) - 4) * 100) / 100;
 }

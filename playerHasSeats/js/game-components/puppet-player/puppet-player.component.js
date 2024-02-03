@@ -26,10 +26,12 @@ class PuppetPlayerComponent {
       payBet: (x) => this.payBet(x),
       updateBetAmount: (x) => this.updateBetAmount(x),
       addHandToPlayer: (x) => this.addHandToPlayer(x),
+      getRetroResizeCoefficient: () => this.getRetroResizeCoefficient(),
     };
     const info = { name: player.name, bankroll: this.puppetMaster.bankroll, bet: player.betSize, id: spotId };
     this.view = new PuppetPlayerUI(parentElem, spotId, this.methodsBag, info);
     this.hands = [new HandComponent(this.brainType, this.view.handsElem, this.methodsBag, this.betSize, spotId, 0)];
+    this.retroBetCoefficient = 1;
   }
 
   getHandsPlayedCount() {
@@ -78,6 +80,10 @@ class PuppetPlayerComponent {
     }
   }
 
+  getRetroResizeCoefficient = () => {
+    return this.retroBetCoefficient;
+  }
+
   makeInsuranceBet() {
     //NO NEED TO CHANGE THE BANKROLL HERE - THAT HAPPENS DURING INSURANCE PAYOUT
     if(!this.hasInsurance) {
@@ -101,7 +107,6 @@ class PuppetPlayerComponent {
   }
 
   payInsuranceBet(hasBlackJack) {
-    // THE UI FOR PUPPETS IS UPDATED IN table.insurancePayout
     this.puppetMaster.payInsuranceBet(hasBlackJack)
     if(flow.getCurrentStep() === "INSURANCE_PAYOUT" && hasBlackJack && this.hasInsurance) {
       this.puppetMaster.bankroll = this.puppetMaster.bankroll + ( 2 * this.insuranceBetSize );
@@ -112,19 +117,6 @@ class PuppetPlayerComponent {
     this.hasInsurance = false;
     this.insuranceBetSize = 0;
   }
-
-//   reset() {
-//     this.view.removeHands();
-//     if(this.getBankroll() > 0) {
-//       const betSize = Math.min(this.getBankroll(), this.betSize);
-//       this.hands = [new HandComponent(this.brainType, this.view.handsElem, this.methodsBag, this.betSize, this.id, 0)];
-//       this.hasInsurance = false;
-//       this.insuranceBetSize = 0;
-//       this.hasPlayed = false;
-//     } else {
-//       this.methodsBag.leaveSpot(this.id);
-//     }
-//   }
 
   reset() {
   this.view.removeHands();

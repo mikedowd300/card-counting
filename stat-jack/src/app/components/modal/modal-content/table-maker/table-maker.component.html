@@ -1,0 +1,111 @@
+<div class="table-maker-container">
+  <h2>Manage Tables</h2>
+  <div class="mode-selections-wrapper">
+    <button 
+      class="add-edit-mode" 
+      [class.selected]="mode === 'add-edit-mode'" 
+      (click)="selectMode('add-edit-mode')"
+    >{{addOrEditModeButtonText}}
+    </button>
+    <button 
+      class="delete-mode" 
+      [class.hidden]="tableConfigsArray.length < 1"
+      [class.selected]="mode === 'delete-mode'" 
+      (click)="selectMode('delete-mode')"
+    >Delete
+    </button>
+    <button 
+      class="select-mode" 
+      [class.hidden]="tableConfigsArray.length < 1"
+      [class.selected]="mode === 'select-mode'" 
+      (click)="selectMode('select-mode')"
+    >Select
+    </button>
+  </div>
+  <div class="table-maker-content-wrapper" *ngIf="mode === 'add-edit-mode'">
+    <div class="selector-and-button-wrapper">
+      <div class="select-wrapper">    
+        <select (change)="handleSelectTable($event)">
+          <option *ngFor="let key of tableConfigsArray" [value]="key">{{key}}</option>
+        </select>
+      </div>
+      <button *ngIf="buttonText" (click)="handleTableCTA($event)">
+        <span>{{ buttonText }}</span>
+      </button>
+    </div>
+    <div class="table-content">
+      <div class="table-wrapper title">
+        <span>Change the table name to create a new table</span>
+        <input
+          type="text"
+          [(ngModel)]="tableConfig.title.value"
+          (change)="handleTitleChange($event)"
+        />
+      </div>
+
+      <div class="table-wrapper">
+        <div class="table">
+          <span class="vertically-center">{{ tableConfig['tableConditions'].description }}</span>
+          <span class="select-wrapper">
+            <select [(ngModel)]="tableConfig.tableConditions.value">
+              <option *ngFor="let condition of storedTableConditions" 
+                [value]="condition" 
+                [selected]="condition === tableConfig.tableConditions.value"
+              >
+                {{condition}}
+              </option>
+            </select>
+          </span>
+        </div>
+      </div>
+
+      <div class="table-players table-wrapper">
+        <div class="table" *ngIf="tableConfig.players.value.length > 0">
+          <span class="vertically-center">Select player to delete</span>
+          <button 
+            *ngIf="playerToDelete" 
+            class="delete-player button" 
+            (click)="deletePlayer()"
+          >
+            <span>Delete {{ playerToDelete }}</span>
+          </button>
+          <span class="select-wrapper">
+            <select (change)="setPlayerToDelete($event)">
+              <option *ngFor="let player of tableConfig.players.value" [value]="player">{{player}}</option>
+            </select>
+          </span>
+        </div>
+
+        <div class="table" *ngIf="tableConfig.players.value.length === 0">
+          <span class="vertically-center">There are no players for this table</span>
+        </div>
+
+        <div class="table">
+          <span class="vertically-center">Add players from here</span>
+          <span class="select-wrapper">
+            <select (change)="addPlayer($event)">
+              <option *ngFor="let player of storedPlayers" [value]="player">{{player}}</option>
+            </select>
+          </span>
+        </div>
+
+        <div class="player-spot-mapping" *ngIf="tableConfig.players.value.length > 0">
+          <h3>Assign each player a spot, give them room to add hands.</h3>
+          
+          <div *ngFor="let player of tableConfig.players.value" class="player-spots">
+            <span class="vertically-center">Assign a spot to {{ player }}</span>
+            <span class="select-wrapper"> 
+              <select 
+                [(ngModel)]="playersSpotInfo[player].spotId" 
+                (change)="updatePlayersSpotInfo($event.target, player)"
+              >
+                <option *ngFor="let num of playersSpotInfo[player].spotOptions" [value]="num">{{ num }}</option>
+              </select>
+            </span>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

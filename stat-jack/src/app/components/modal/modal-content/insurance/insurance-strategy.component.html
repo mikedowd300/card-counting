@@ -1,0 +1,48 @@
+<div class="insurance-strategy-container">
+  <h2>Create Edit or View Insurance Strategies</h2>
+  <div class="mode-selections-wrapper">
+    <button 
+      class="add-edit-mode" 
+      [class.selected]="mode === 'add-edit-mode'" 
+      (click)="selectMode('add-edit-mode')"
+    >Open a Chart
+    </button>
+    <button 
+      class="delete-mode" 
+      [class.hidden]="false"
+      [class.selected]="mode === 'delete-mode'" 
+      (click)="selectMode('delete-mode')"
+    >Delete
+    </button>
+    <button 
+      class="select-mode" 
+      [class.hidden]="false"
+      [class.selected]="mode === 'select-mode'" 
+      (click)="selectMode('select-mode')"
+    >Select
+    </button>
+  </div>
+  <div class="insurance-strategy-wrapper" *ngIf="mode === 'add-edit-mode'">
+    <div class="selector-and-button-wrapper">
+      <div class="select-wrapper">    
+        <label for="chart-maker-selector"></label>
+        <select name="" id="chart-maker-selector" (change)="handleSelectStrategy($event)">
+          <option disabled selected>Select an Insurance Strategy</option>
+          <option *ngFor="let key of insuranceService.strategyKeys" [value]="key">{{key}}</option>
+        </select>
+      </div>
+      <button *ngIf="customStrategyTitle" (click)="insuranceService.addStrategyToLS(selectedStrategy, customStrategyTitle)">Save New Strategy</button>
+    </div>
+  </div>
+
+  <div>
+    <div *ngFor="let deck of deckKeys">
+      <label>{{ deckToTextMap[deck] }}</label>
+      <input type="text" [(ngModel)]="this.selectedStrategy[deck]"/>
+    </div>
+    <div *ngIf="showNewStrategyPrompt" class="strategy-name-wrapper">
+      <label>Edit Values and  a Name To create a Custom Strategy</label>
+      <input type="text"  [(ngModel)]="customStrategyTitle">
+    </div>
+  </div>
+</div>

@@ -1,0 +1,118 @@
+<div class="tipping-container">
+  <h2>Create Edit or View Unit Resizing Strategies</h2>
+  <div class="mode-selections-wrapper">
+    <button 
+      class="add-edit-mode" 
+      [class.selected]="mode === 'add-edit-mode'" 
+      (click)="selectMode('add-edit-mode')"
+    >Open a Chart
+    </button>
+    <button 
+      class="delete-mode" 
+      [class.hidden]="false"
+      [class.selected]="mode === 'delete-mode'" 
+      (click)="selectMode('delete-mode')"
+    >Delete
+    </button>
+    <button 
+      class="select-mode" 
+      [class.hidden]="false"
+      [class.selected]="mode === 'select-mode'" 
+      (click)="selectMode('select-mode')"
+    >Select
+    </button>
+  </div>
+
+  <div class="tipping-wrapper" *ngIf="mode === 'add-edit-mode'">
+    <p class="directions">Use the dropdown to view existing charts or edit charts you have created. Create a new chart from an existing chart.</p>
+    <div class="selector-and-button-wrapper">
+      <div class="select-wrapper">    
+        <label></label>
+        <select name="" id="chart-maker-selector" (change)="handleSelectStrategy($event)">
+          <option disabled selected>Select a Tipping Strategy</option>
+          <option *ngFor="let key of tippingService.configKeys" [value]="key">{{key}}</option>
+        </select>
+      </div>
+      <button *ngIf="newTitle" (click)="addStrategyToLS()">Save {{ newTitle }}</button>
+    </div>
+  </div>
+
+  <div *ngIf="selectedTippingConfigTitle" class="new-title">
+    <span>Change the title to create a new tipping strategy</span>
+      <input
+        type="text"
+        placeholder="Enter new title here"
+        [(ngModel)]="newTitle"
+     />
+  </div>
+
+  <div *ngIf="selectedTippingConfig" class="tipping-content">
+    <div class="how-much" *ngIf="selectedTippingConfig.tipToBetsizeRatios">
+      <h3>How Much to Tip</h3>
+      <p>This sets a player's tipping unit based on the player's betting unit.</p>
+      <div class="button-wrapper">
+        <button (click)="addRatioRow()">Add row</button>
+        <button 
+          *ngIf="selectedTippingConfig.tipToBetsizeRatios.length > 1" 
+          (click)="removeRatioRow()"
+        >
+          Delete row
+        </button>
+      </div>
+      <span class="tip-instruction" *ngFor="let ratio of selectedTippingConfig.tipToBetsizeRatios; index as i">
+        Tipping unit of $<input class="tip-amount" type="text" placeHolder="tip amount" [(ngModel)]="ratio[0]"> 
+        for bets of $<input type="text" placeHolder="bet amount" [(ngModel)]="ratio[1]">
+        <span *ngIf="i === 0"> or less.</span>
+        <span *ngIf="i > 0"> to ${{selectedTippingConfig.tipToBetsizeRatios[i-1][1]}}.</span>
+      </span>
+      <span class="tip-instruction max-tip" *ngIf="selectedTippingConfig as config">
+        For any bet above ${{config.tipToBetsizeRatios[config.tipToBetsizeRatios.length - 1][1]}} the tipping unit is 
+        $<input class="max-tip" type="text" [(ngModel)]="config.maxTip">
+      </span>
+    </div>
+    <div class="how-often" *ngIf="selectedTippingConfig as config">
+      <h3>How Often to Tip</h3>
+      <p>Select the times when the player will tip.</p>
+      <div class="tip-ocassion checkbox">
+        <input type="checkbox" [(ngModel)]="config.afterBlackjack"> 
+        <span>After a blackjack</span>
+      </div>
+      <div class="tip-ocassion checkbox">
+        <input type="checkbox" [(ngModel)]="config.dealerJoins">
+        <span>When a new dealer joins the table</span>
+      </div>
+      <div class="tip-ocassion checkbox">
+        <input type="checkbox" [(ngModel)]="config.dealerLeaves">
+        <span>When a dealer leaves the table</span>
+      </div>
+      <div class="tip-ocassion checkbox">
+        <input type="checkbox" [(ngModel)]="config.tipFirstHandOfShoe">
+        <span>The first hand of a new shoe</span>
+      </div>
+      <div class="tip-ocassion checkbox">
+        <input type="checkbox" [(ngModel)]="config.playerIncreasesBet">
+        <span>When the player increases the bet</span>
+      </div>
+      <div class="tip-ocassion">
+        <span>Every </span>
+        <input type="text" [(ngModel)]="config.everyXHands">
+        <span> hands</span>
+      </div>
+    </div>
+    <div class="tipping-details" *ngIf="selectedTippingConfig as config">
+      <h3>Splits and Doubles</h3>
+      <div class="tip-ocassion checkbox">
+        <input type="checkbox" [(ngModel)]="config.tipSplitHandToo" >
+        <span>Add a tip when splitting a hand with a tip.</span>
+      </div>
+      <div class="tip-ocassion checkbox">
+        <input type="checkbox" [(ngModel)]="config.doubleOnDouble">
+        <span>Double the tip on a double down</span>
+      </div>
+      <div class="tip-ocassion checkbox">
+        <input type="checkbox" [(ngModel)]="config.tipWongHands">
+        <span>Tip Wonged hands too</span>
+      </div>
+    </div>
+  </div>
+</div>

@@ -105,7 +105,6 @@ class TableUI {
   replaceSpots(oldSpots, newSpots) {    
     for(let id = 0; id < oldSpots; id++) {
       const spot = jq.getElById(this.getSpotSelector(id));
-      console.log(spot);
       spot.remove();
     };
     this.info = { ...this.info, spots: newSpots};
@@ -125,8 +124,10 @@ class TableUI {
   }
 
   removePuppetPlayer(parentId, childId, id) {
-    jq.removeChildFromParentByIds(parentId, childId);
-    jq.getElById(this.getOpenSpotSelector(id)).classList.remove('hide');
-    jq.getElById(this.getTakenSpotSelector(id)).classList.add('hide');
+    const index = parentId; // TO DO - parentId is not an id, its an index, refactor/rename - its the only valur needed
+    console.log(index, this.getOpenSpotSelector(index));
+    jq.removeChildFromParentByIds(`taken-${index}-spot`, `player-${index}`);
+    jq.getElById(this.getOpenSpotSelector(index)).classList.remove('hide');
+    jq.getElById(this.getTakenSpotSelector(index)).classList.add('hide');
   }
 }

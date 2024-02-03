@@ -1,0 +1,44 @@
+<div class="modal-container">
+  <button class="modal-closer" (click)="close()">X</button>
+  <div class="modal-content">
+    <conditions-maker 
+      *ngIf="statJackService.modalContentMap[modalContent.TABLE_CONDITIONS_MAKER]"
+    >
+    </conditions-maker>
+    <player-maker 
+      *ngIf="statJackService.modalContentMap[modalContent.PLAYER_PROFILE_MAKER]"
+    >
+    </player-maker>
+    <table-maker
+      *ngIf="statJackService.modalContentMap[modalContent.TABLE_MAKER]"
+    >
+    </table-maker>
+    <data-collector
+      *ngIf="statJackService.modalContentMap[modalContent.DATA_COLLECTOR]"
+    >
+    </data-collector>
+    <play-strategy-chart-maker
+      *ngIf="statJackService.modalContentMap[modalContent.PLAY_CHART_MAKER]"
+    >
+    </play-strategy-chart-maker>
+    <surrender-chart-maker
+      *ngIf="statJackService.modalContentMap[modalContent.SURRENDER_CHART_MAKER]"
+    >
+    </surrender-chart-maker>
+    <bet-spread-chart-maker
+      *ngIf="statJackService.modalContentMap[modalContent.BET_SPREAD_CHART_MAKER]"
+    >
+    </bet-spread-chart-maker>
+    <insurance-strategy
+      *ngIf="statJackService.modalContentMap[modalContent.INSURANCE_STRATEGY]"
+    >
+    </insurance-strategy>
+    <unit-resizing
+      *ngIf="statJackService.modalContentMap[modalContent.UNIT_RESIZING_STRATEGY_MAKER]"
+    >
+    </unit-resizing>
+    <wonging *ngIf="statJackService.modalContentMap[modalContent.WONG_STRATEGY]"></wonging>
+    <tipping *ngIf="statJackService.modalContentMap[modalContent.TIPPING_STRATEGY]">
+    </tipping>
+  </div>
+</div>
