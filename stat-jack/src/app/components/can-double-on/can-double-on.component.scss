@@ -1,0 +1,48 @@
+.can-double-on-wrapper {
+  margin: 0 8px;
+  border: 1px solid grey;
+  background-color: azure;
+  padding: 8px;
+  display: flex;
+
+  .vertically-center {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .condition-wrapper {
+    width: 50%;
+    padding: 6px 8px;
+
+    @media screen and (max-width: 599px) {
+      width: calc(100% - 8px);
+    }
+  }
+
+  .condition {
+    justify-content: space-between;
+    font-size: 16;
+    background-color: rgba(0, 0, 0, .03);
+    display: flex;
+    padding: 0 8px;
+
+    .checkbox-wrapper {
+      width: 24px;
+
+      input {
+        width: 20px;
+        height: 20px;
+        margin-right: 8px;
+      }
+    }
+
+    &:nth-child(odd) {
+      background-color: rgba(0, 0, 0, .01);
+    }
+  }
+
+  @media screen and (max-width: 599px) {
+    flex-direction: column;
+  }
+}

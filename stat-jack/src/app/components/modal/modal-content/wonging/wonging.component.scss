@@ -1,0 +1,237 @@
+:host {
+
+  .vertically-center {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .wonging-container {
+    padding: 12px;
+  } 
+
+  h2 {
+    margin-top: -58px;
+    padding-right: 36px;
+    text-align: center;
+  }
+
+  .mode-selections-wrapper {
+    display: flex;
+    justify-content: space-around;
+
+    button {
+      font-size: 18px;
+      padding: 4px 8px;
+      border: none;
+      border-radius: 2px;
+      width: 50%;
+      background-color: white;
+      border: 2px solid grey;
+      color: grey;
+
+      &:nth-child(2) {
+        margin: 0 4px;
+      }
+
+      &:hover:not(.selected) {
+        color: black;
+        border: 2px solid black;
+      }
+
+      &.hidden {
+        display: none;
+      }
+
+      &.selected {
+        background-color: azure;
+        color: black;
+        border: 2px solid blue;
+      }
+
+      &:active {
+        color: blue;
+        background-color: white;
+      }
+    }
+  }
+
+  .wonging-wrapper {
+    margin-top: 12px;
+    border-top: 1px solid black;
+
+    .explanation {
+      margin-bottom: 0;
+      margin-top: 12px;
+      font-size: 18px;
+      text-align: center;
+    }
+
+    .directions {
+      margin-bottom: 0;
+      margin-top: 12px;
+      font-size: 18px;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    .selector-and-button-wrapper {
+      display: flex;
+      width: 100%;
+
+      button {
+        box-sizing: border-box;
+        width: 50%;
+        max-width: 600px;
+        padding-left: 8px;
+        margin: 12px 0 0 12px;
+        height: 29px;
+        font-size: 18px;
+        background-color: blue;
+        border: 1px solid blue;
+        border-radius: 2px;
+        color: white;
+
+        &:hover {
+          cursor: pointer;
+        }
+
+        &:active {
+          color: blue;
+          background-color: white;
+        }
+      }
+
+      .select-wrapper {
+        width: 50%;
+
+        select {
+          box-sizing: border-box;
+          width: 100%;
+          max-width: 600px;
+          padding-left: 8px;
+          margin: 12px 12px 0 0;
+          height: 29px;
+          font-size: 18px;
+        }
+      }
+    }
+  }
+
+  .new-title {
+    margin-top: 24px;
+    font-size: 16px;
+    display: flex;
+    justify-content: center;
+
+    input {
+      margin-left: 12px;
+      padding: 4px;
+      text-align: center;
+      min-width: 350px;
+      font-size: 16px;
+    }
+  }
+
+  .wong-content {
+    text-align: center;
+    margin-top: 24px;
+
+    .spot-index {
+      margin-bottom: 8px;
+
+      .spot-title-wrapper {
+        display: flex;
+        justify-content: center;
+
+        p.spot-title {
+          font-size: 18px;
+          font-weight: 600;
+          margin-top: 0;
+          margin-bottom: 4px;
+        }
+
+        .column-button-wrapper {
+          margin-left: 24px;
+
+          .column-button {
+            background-color: blue;
+            color: white;
+            width: 110px;
+            border: lightblue;
+            border-radius: 6px;
+
+            &.dec {
+              margin-right: 8px;
+            }
+
+            &:active {
+              color: blue;
+              background-color: white;
+            }
+          }
+        }
+      }
+
+      .shoe-section {
+        display: flex;
+        justify-content: center;
+
+        .inc-spot, .dec-spot {
+          border-radius: 6px;
+          max-width: 70px;
+          min-width: 70px;
+          margin-left: 12px;
+          background: blue;
+          color: white;
+          font-size: 16px;
+        }
+
+        .dec-spot {
+          margin-right: 12px;
+        }
+
+        .wong-by-section {
+          padding: 4px 0;
+
+          &:nth-of-type(odd) {
+            background-color: rgba(0, 0, 0, .1);
+          }
+          &:nth-of-type(even) {
+            background-color: rgba(0, 0, 0, .03);
+          }
+        }
+
+        .section-title {
+          margin: 2px 0;
+        }
+
+        .section-content {
+          padding-right: 12px;
+          margin-left: 12px;
+          font-size: 16px;
+
+          .label-input-wrapper {
+            display: flex;
+            justify-content: space-between;
+            line-height: 16px;
+
+            label {
+              margin-top: 6px;
+              padding-right: 8px;
+              font-size: 16px;
+            }
+
+            input {
+              width: 40px;
+              text-align: center;
+              margin-top: 4px;
+              padding: 2px;
+              font-size: 16px;
+            }
+          }
+        }
+      }
+    }
+  }
+}

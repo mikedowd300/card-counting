@@ -1,0 +1,107 @@
+<div class="condtions-maker-container">
+  <h2>Manage Table Conditions</h2>
+  <div class="mode-selections-wrapper">
+    <button 
+      class="add-edit-mode" 
+      [class.selected]="mode === 'add-edit-mode'" 
+      (click)="selectMode('add-edit-mode')"
+    >{{addOrEditModeButtonText}}
+    </button>
+    <button 
+      class="delete-mode" 
+      [class.hidden]="conditionsConfigArray.length < 1"
+      [class.selected]="mode === 'delete-mode'" 
+      (click)="selectMode('delete-mode')"
+    >Delete
+    </button>
+    <button 
+      class="select-mode" 
+      [class.hidden]="conditionsConfigArray.length < 1"
+      [class.selected]="mode === 'select-mode'" 
+      (click)="selectMode('select-mode')"
+    >Select
+    </button>
+  </div>
+
+  <div class="conditions-maker-content-wrapper" *ngIf="mode === 'add-edit-mode'">
+    <div class="selector-and-button-wrapper">
+      <div class="select-wrapper">    
+        <label for="condtions-maker-selector"></label>
+        <select name="" id="condtions-maker-selector" (change)="handleSelectTableCondition($event)">
+          <option [value]="conditionsService.defaultStoredTableConditions.title">
+            {{ conditionsService.defaultStoredTableConditions.title }}
+          </option>
+          <option *ngFor="let key of conditionsConfigArray" [value]="key">{{key}}</option>
+        </select>
+      </div>
+      <button *ngIf="buttonText" (click)="handleTableConditionsCTA()">{{ buttonText }}</button>
+    </div>
+
+    <div class="condition-content">
+      <div class="condition-wrapper title">
+        <span>Change the title to create a new set of table conditions</span>
+        <input
+          type="text"
+          [(ngModel)]="tableConditionsTitle"
+          (change)="handleTitleChange($event)"
+        />
+      </div>
+      <div *ngFor="let key of tableConditionKeys" 
+        class="condition-wrapper" 
+        [class.extended]="tableConditions[key].expandsWhenFalse && !tableConditions[key].value"
+      >
+        <div class="condition {{tableConditions[key].displayWith}}">
+          <span class="vertically-center">{{ tableConditions[key].description }}</span>
+          <span 
+            class="checkbox-wrapper" 
+            [class.flex]="key === 'DA2'" 
+            *ngIf="tableConditions[key].displayWith === 'checkbox'"
+          >
+            <span *ngIf="key === 'DA2'">Leave unchecked to customize options</span>
+            <input
+              type="checkbox"
+              [(ngModel)]="tableConditions[key].value"
+            />
+          </span>
+          <span class="text-wrapper" *ngIf="tableConditions[key].displayWith === 'text'">
+            <input
+              type="text"
+              [(ngModel)]="tableConditions[key].value"
+            />
+          </span>
+          <span class="radio-wrapper" *ngIf="tableConditions[key].displayWith === 'radio'">
+            <div class="input-wrapper" *ngFor="let option of tableConditions[key].options">
+              <label for="">{{option}}</label>
+              <input
+                [checked]="option === tableConditions[key].value"
+                type="radio"
+                [value]="option"
+                (change)="handleRadioChange($event, option, key)"
+              />
+            </div>
+          </span>
+        </div>
+        <div *ngIf="tableConditions[key].expandsWhenFalse && !tableConditions[key].value">
+          <can-double-on 
+            [first2Cards]="tableConditions[key].canOnlyDoubleOn"
+            [DS21]="tableConditions[key].DS21"
+            [DS21A]="tableConditions[key].DS21A"
+            (updateTableConfigByConditionKey)="updateTableConditionByConditionKey($event)"
+          ></can-double-on>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="conditions-maker-content-wrapper" *ngIf="mode === 'delete-mode'">
+    <h3>Select the table conditions congiguration you would like to delete</h3>
+    <div class="selector-and-button-wrapper">
+      <div class="select-wrapper">    
+        <label for="condtions-maker-selector"></label>
+        <select name="" id="condtions-maker-selector" (change)="handleSelectTableConditionToDelete($event)">
+          <option *ngFor="let key of conditionsConfigArray" [value]="key">{{key}}</option>
+        </select>
+      </div>
+      <button *ngIf="buttonText" (click)="handleTableConditionsCTA()">{{ buttonText }}</button>
+    </div>
+  </div>
+</div>

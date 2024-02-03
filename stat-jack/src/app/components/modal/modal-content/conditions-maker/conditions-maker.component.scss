@@ -1,0 +1,203 @@
+:host {
+
+  .vertically-center {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .condtions-maker-container {
+    padding: 12px;
+  } 
+
+  h2 {
+    margin-top: -58px;
+    padding-right: 36px;
+    text-align: center;
+  }
+
+  .mode-selections-wrapper {
+    display: flex;
+    justify-content: space-around;
+
+    button {
+      font-size: 18px;
+      padding: 4px 8px;
+      border: none;
+      border-radius: 2px;
+      width: 50%;
+      background-color: white;
+      border: 2px solid grey;
+      color: grey;
+
+      &:nth-child(2) {
+        margin: 0 4px;
+      }
+
+      &:hover:not(.selected) {
+        color: black;
+        border: 2px solid black;
+      }
+
+      &.hidden {
+        display: none;
+      }
+
+      &.selected {
+        background-color: azure;
+        color: black;
+        border: 2px solid blue;
+      }
+    }
+  }
+
+  .conditions-maker-content-wrapper {
+    margin-top: 12px;
+    border-top: 1px solid black;
+
+    .selector-and-button-wrapper {
+      display: flex;
+      width: 100%;
+
+      button {
+        box-sizing: border-box;
+        width: 50%;
+        max-width: 600px;
+        padding-left: 8px;
+        margin: 12px 0 0 12px;
+        height: 29px;
+        font-size: 18px;
+        background-color: blue;
+        border: 1px solid blue;
+        border-radius: 2px;
+        color: white;
+
+        &:hover {
+          cursor: pointer;
+        }
+
+        &:active {
+          color: blue;
+          background-color: white;
+        }
+      }
+
+      .select-wrapper {
+        width: 50%;
+
+        select {
+          box-sizing: border-box;
+          width: 100%;
+          max-width: 600px;
+          padding-left: 8px;
+          margin: 12px 12px 0 0;
+          height: 29px;
+          font-size: 18px;
+        }
+      }
+    }
+
+    .condition-content {
+      padding-top: 12px;
+
+      .condition-wrapper {
+        background-color: aquamarine;
+        width: 100%;
+
+        .condition {
+          display: flex;
+          justify-content: space-between;
+          padding: 6px 8px;
+          font-size: 16px;
+  
+          .checkbox-wrapper {
+            width: 24px;
+
+            &.flex {
+              width: 150px;
+              display: flex;
+              justify-content: space-around;
+
+              span {
+                font-size: 12px;
+              }
+
+              input {
+                min-width: 20px;
+                height: 20px;
+              }
+            }
+  
+            input {
+              width: 20px;
+              height: 20px;
+            }
+          }
+  
+          .text-wrapper {
+            width: 52px;
+  
+            input {
+              width: 45px;
+              text-align: center;
+            }
+          }
+  
+          .radio-wrapper {
+            display: flex;
+  
+            .input-wrapper {
+              width: 72px;
+              display: flex;
+              flex-direction: column;
+              text-align: center;
+            }
+          }
+
+          &.radio {
+            @media only screen and (max-width: 499px) {
+              flex-direction: column;
+
+              .radio-wrapper {
+                margin:auto;
+                border: 1px solid grey;
+                background-color: rgba(255, 255, 255, .5);
+                padding: 4px 0;
+                border-radius: 2px;
+              }
+
+              .vertically-center {
+                margin:auto;
+                margin-bottom: 6px;
+              }
+            }
+          }
+        }
+  
+        &:nth-child(odd) {
+          background-color: aqua;
+        }
+  
+        &.title {
+          flex-direction: column;
+          padding-top: 6px;
+          
+          span {
+            padding-left: 8px;
+            text-align: center;
+          }
+
+          input {
+            margin: 4px 8px 8px;
+            width: calc(100% - 24px);
+            padding: 2px;
+          }
+        }
+
+        &.extended {
+          padding-bottom: 8px;
+        }
+      }
+    }
+  }
+}

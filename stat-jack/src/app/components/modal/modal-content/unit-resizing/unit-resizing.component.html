@@ -1,0 +1,112 @@
+<div class="unit-resizing-container">
+  <h2>Create Edit or View Unit Resizing Strategies</h2>
+  <div class="mode-selections-wrapper">
+    <button 
+      class="add-edit-mode" 
+      [class.selected]="mode === 'add-edit-mode'" 
+      (click)="selectMode('add-edit-mode')"
+    >Open a Chart
+    </button>
+    <button 
+      class="delete-mode" 
+      [class.hidden]="false"
+      [class.selected]="mode === 'delete-mode'" 
+      (click)="selectMode('delete-mode')"
+    >Delete
+    </button>
+    <button 
+      class="select-mode" 
+      [class.hidden]="false"
+      [class.selected]="mode === 'select-mode'" 
+      (click)="selectMode('select-mode')"
+    >Select
+    </button>
+  </div>
+  <div class="unit-resizing-wrapper" *ngIf="mode === 'add-edit-mode'">
+    <p class="directions">Use the dropdown to view existing charts or edit charts you have created. Create a new chart by editing and renaming an existing chart.</p>
+    <div class="selector-and-button-wrapper">
+      <div class="select-wrapper">    
+        <label for="chart-maker-selector"></label>
+        <select name="" id="chart-maker-selector" (change)="handleSelectStrategy($event)">
+          <option disabled selected>Select a Unit Resizing Strategy</option>
+          <option *ngFor="let key of unitResizingService.configKeys" [value]="key">{{key}}</option>
+        </select>
+      </div>
+      <button *ngIf="newTitle" (click)="addStrategyToLS()">Save</button>
+    </div>
+  </div>
+  <div *ngIf="unitProgression.length > 0" class="unit-resize-form-wrapper">
+    <div *ngIf="newTitle !== selectedUnitResizingConfigTitle" class="new-title-wrapper">
+      <label *ngIf="!newTitle">
+        To create a new chart based on <i>{{ selectedUnitResizingConfigTitle }}</i>, just enter a new title
+      </label>
+      <label *ngIf="newTitle">
+        Edit <b><i>{{ selectedUnitResizingConfigTitle }}</i></b> and press <b><i>Save</i></b> to create <b><i>{{ newTitle }}</i></b>.
+      </label>
+      <input 
+        type="text" 
+        [(ngModel)]="newTitle" 
+        placeholder="Enter new chart name"
+      />
+    </div>
+    <div class="titles-wrapper">
+      <button *ngIf="newTitle" (click)="removeRow()">Remove Row</button>
+      <span class="row-title unit">Unit Progression</span>
+      <span class="row-title">Increase Unit Size When Bankroll Reaches</span>
+      <span class="row-title">Decrease Unit Size When Bankroll Reaches</span>
+      <button *ngIf="newTitle" (click)="addRow()">Add Row</button>
+    </div>
+    <div 
+      class="column-wrapper" 
+      *ngFor="let unit of unitProgression; index as i" 
+      [class.indent]="newTitle && i === 0"
+    >
+      <input 
+        class="unit" 
+        type="number" 
+        [(ngModel)]="unitProgression[i]"
+        [disabled]="!newTitle"
+      />
+      <input 
+        class="increase-at" 
+        type="text" 
+        [(ngModel)]="increaseAtProgression[i]"
+        [class.empty]="!increaseAtProgression[i]"
+        [disabled]="!increaseAtProgression[i] || !newTitle"
+      />
+      <input 
+        class="decrease-at" 
+        type="text" 
+        [(ngModel)]="decreaseAtProgression[i]"
+        [class.empty]="!decreaseAtProgression[i]"
+        [disabled]="!decreaseAtProgression[i] || !newTitle"
+      />
+    </div>
+    <div *ngIf="unitProgression.length > 1" class="unit-resize-extras">
+      <div class="option-wrapper">
+        <p>Round to nearest</p>
+        <div class="input-wrapper" *ngFor="let option of chipRoundStrategyOptions">
+          <label>{{ option }}</label>
+          <input 
+            type="radio"
+            [value]="option"
+            [checked]="option === roundToNearestChip"
+            (change)="handleChipRoundingStrategyRadioChange($event)"
+          />
+        </div>
+      </div>
+      <div class="option-wrapper">
+        <p>Rounding Method</p>
+        <div class="input-wrapper" *ngFor="let option of roundingStrategyOptions">
+          <label>{{ option }}</label>
+          <input 
+            type="radio"
+            [value]="option"
+            [checked]="option === roundingMethod"
+            (change)="handleRoundingStrategyRadioChange($event)"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

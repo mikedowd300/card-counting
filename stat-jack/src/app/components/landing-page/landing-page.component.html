@@ -1,0 +1,59 @@
+<div class="landing-page-container">
+  <modal *ngIf="statJackService.showModal$ | async" class="landing-page-modal"></modal>
+  <div class="left column">  
+    <h2>Charts and Strategies</h2>
+    <p class="tag-line">Create edit and delete charts and configurations</p>
+    <div class="chart-type" *ngFor="let chart of chartTypes">
+      <button (click)="showModal(chart.view)">
+        <h3>{{ chart.name }}</h3>
+        <p>{{ chart.description }}</p>
+      </button>
+    </div>
+  </div>
+  <div class="right column">
+
+    <div class="settings-group">
+      <h2>Table Conditions</h2>
+      <p class="tag-line">Create edit and delete table conditions for any game</p>
+      <div class="table-conditions">
+        <button (click)="showModal(modalContent.TABLE_CONDITIONS_MAKER)">
+          <h3>Create or Edit a Set of Conditions</h3>
+          <p>Create the conditions that reflect your IRL casino</p>
+        </button>
+      </div>
+    </div>
+
+    <div class="settings-group">
+      <h2>Player Profiles</h2>
+      <p class="tag-line">Create edit and delete new players</p>
+      <div class="player-profile">
+        <button (click)="showModal(modalContent.PLAYER_PROFILE_MAKER)">
+          <h3>Create or Edit a Player</h3>
+          <p>Having several players at a table lets you compare different strategies and conditions.</p>
+        </button>
+      </div>
+    </div>
+
+    <div class="settings-group">
+      <h2>Table Profiles</h2>
+      <p class="tag-line">Create edit and delete new tables</p>
+      <div class="player-profile">
+        <button (click)="showModal(modalContent.TABLE_MAKER)">
+          <h3>Create or Edit a Table</h3>
+          <p>Create the table with the conditions and the players you want.</p>
+        </button>
+      </div>
+    </div>
+
+    <div class="settings-group">
+      <h2>Generate Data for Analysis</h2>
+      <p class="tag-line">The more play the more acurate the data.</p>
+      <div class="new-data-collection">
+        <button (click)="showModal(modalContent.DATA_COLLECTOR)">
+          <h3>Select a Table and Generate Data</h3>
+          <p>Having several players at a table lets you compare different strategies and conditions.</p>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

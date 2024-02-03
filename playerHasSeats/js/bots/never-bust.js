@@ -2,8 +2,8 @@ class NeverBustBot {
 
   constructor() {}
 
-  bettingUnit = 10;
-  bankrollHistory = [];
+  bettingUnit = conditions.minimumBet;
+  // bankrollHistory = [];
   chooseInsuranceOption = () => 'DECLINE';
 
   resizeBet = () => {
@@ -20,6 +20,6 @@ class NeverBustBot {
     }
     return 'STAY'
   };
-  addToBankrollHistory = item => this.bankrollHistory.push(item);
-  getBankrollHistory = () => this.bankrollHistory;
+  // addToBankrollHistory = item => this.bankrollHistory.push(item);
+  // getBankrollHistory = () => this.bankrollHistory;
 }

@@ -1,0 +1,75 @@
+<div class="play-chart-maker-container">
+  <h2>Create Edit or View Strategy Charts</h2>
+  <div class="mode-selections-wrapper">
+    <button 
+      class="add-edit-mode" 
+      [class.selected]="mode === 'add-edit-mode'" 
+      (click)="selectMode('add-edit-mode')"
+    >Open a Chart
+    </button>
+    <button 
+      class="delete-mode" 
+      [class.hidden]="false"
+      [class.selected]="mode === 'delete-mode'" 
+      (click)="selectMode('delete-mode')"
+    >Delete
+    </button>
+    <button 
+      class="select-mode" 
+      [class.hidden]="false"
+      [class.selected]="mode === 'select-mode'" 
+      (click)="selectMode('select-mode')"
+    >Select
+    </button>
+  </div>
+
+  <div class="chart-maker-content-wrapper" *ngIf="mode === 'add-edit-mode'">
+    <div class="selector-and-button-wrapper">
+      <div class="select-wrapper">    
+        <label for="chart-maker-selector"></label>
+        <select name="" id="chart-maker-selector" (change)="handleSelectStrategy($event)">
+          <option disabled selected>Select a Playing Strategy</option>
+          <option *ngFor="let key of chartKeys" [value]="key">{{key}}</option>
+        </select>
+      </div>
+      <button *ngIf="buttonText" (click)="addStrategyToLS()">{{ buttonText }}</button>
+    </div>
+  </div>
+
+  <div class="strategy-wrapper title">
+    <span>Make a Unique Strategy Name to Customize a Strategy</span>
+    <input
+      type="text"
+      [(ngModel)]="selectedStrategyTitle"
+      (change)="updateButtonText($event.target.value)"
+    />
+  </div>
+
+  <div class="strategy-chart-x">
+    <div class="dealer-upcard"></div>
+    <div class="dealer-upcard" *ngFor="let val of chartMaker.dealerUpcards">{{val}}</div>
+  </div>
+  <div class="container">
+    <div class="strategy-chart-y">
+      <div class="player-first-2" *ngFor="let val of chartMaker.playerFirst2">{{val}}</div>
+    </div>
+    <div class="cells">
+      <div *ngFor="let pf2 of chartMaker.playerFirst2" class="horizontal">
+        <div *ngFor="let du of chartMaker.dealerUpcards" [class]="du + '-' + pf2">
+          <input 
+            class="options" 
+            type="text" 
+            [(ngModel)]="selectedChart[du + '-' + pf2].options" 
+          >
+          <input 
+            class="conditions" 
+            type="text" 
+            [(ngModel)]="selectedChart[du + '-' + pf2].conditions" 
+            (change)="updateSelectedCellsOptions($event, du + '-' + pf2)"
+          >
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

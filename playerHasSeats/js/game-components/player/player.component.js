@@ -25,12 +25,57 @@ class PlayerComponent {
       payBet: (x) => this.payBet(x),
       updateBetAmount: (x) => this.updateBetAmount(x),
       addHandToPlayer: (x) => this.addHandToPlayer(x),
+      getRetroResizeCoefficient: () => this.getRetroResizeCoefficient(),
     };
     const info = { name, bankroll: this.bankroll, bet: this.betSize, id: this.id, name: this.name };
     this.view = new PlayerUI(parentElem, this.id, this.methodsBag, info);
     this.hands = [new HandComponent(this.brainType, this.view.handsElem, this.methodsBag, this.betSize, spotId, 0)];
-    this.bankrollHistory = [];
+    this.bankrollHistory = [this.bankroll];
     this.multiplierHistory = [];
+    this.firstHandHistory = []; // amount won / lost - count at end of hand { winnings: x, count: y}
+    this.handHistory = {}
+    this.previousBankroll = this.bankroll;
+    this.hasBeenRetroResized = false;
+    this.retroBetCoefficient = 1;
+  }
+
+  setHandOfShoeStat() {
+    if(!this.handHistory[shoe.handsCount]) {
+      this.handHistory[shoe.handsCount] = [];
+    }
+    this.handHistory[shoe.handsCount].push({ 
+      winnings: this.bankroll - this.previousBankroll, 
+      endOfHandCount: shoe.hiLoRunningCount 
+    })
+    this.previousBankroll = this.bankroll;
+  }
+
+  getHandOfShoeHistoryStats(handOfShoe) {
+    const minCount = Math.min(...this.handHistory[handOfShoe].map(obj => obj.endOfHandCount));
+    const maxCount = Math.max(...this.handHistory[handOfShoe].map(obj => obj.endOfHandCount));
+    const statObj = {};
+
+    for(let i = minCount ; i <= maxCount ; i++ ) {
+      const instances = this.handHistory[handOfShoe].filter(({endOfHandCount}) => endOfHandCount === i).length;
+      const totalWinnings = this.handHistory[handOfShoe].filter(({endOfHandCount}) => endOfHandCount === i)
+        .map(({ winnings }) => winnings)
+        .reduce((partialSum, a) => partialSum + a, 0);
+      const average = instances === 0 ? 0 : Math.round((totalWinnings / instances) * 100) / 100;
+      statObj[i] = { instances, totalWinnings, average }
+    }
+
+    const END_OF_HAND_COUNT_INSTANCES = this.handHistory[handOfShoe].length;
+    const TOTAL_WINNINGS = this.handHistory[handOfShoe]
+      .map(({ winnings }) => winnings)
+      .reduce((partialSum, a) => partialSum + a, 0);
+    const AVERAGE = END_OF_HAND_COUNT_INSTANCES === 0 
+      ? 0 
+      : Math.round((TOTAL_WINNINGS / END_OF_HAND_COUNT_INSTANCES) * 100) / 100;
+
+    console.log('END_OF_HAND_COUNT_INSTANCES:', END_OF_HAND_COUNT_INSTANCES);
+    console.log('TOTAL WINNINGS:', TOTAL_WINNINGS);
+    console.log('AVERAGE:', AVERAGE);
+    console.log(statObj);
   }
 
   getHandsPlayedCount() {
@@ -86,6 +131,26 @@ class PlayerComponent {
     } else {
       this.setBetSize(this.betSize - 1);
     }
+  }
+
+  getRetroResizeCoefficient = () => {
+  // This is used by the bot's betting strategy
+    if(conditions.useRetroResize && conditions.decksPerShoe <= 2) {
+      if(shoe.handsCount === 0) {
+        this.hasBeenRetroResized = false;
+        this.retroBetCoefficient = 2;
+      } else if(shoe.handsCount > 0 && !this.hasBeenRetroResized && shoe.getHiLoRunningCount() <= 2) {
+        this.hasBeenRetroResized = true;
+        this.retroBetCoefficient = 1;
+      } else if(shoe.handsCount > 0 && !this.hasBeenRetroResized && shoe.hiLoRunningCount > 2) {
+      // Need to test shoe.hiLoRunningCount > 0 vs shoe.hiLoRunningCount > 1
+      // This may be a different number for single vs double deck
+        this.hasBeenRetroResized = true;
+      } else if(shoe.getHiLoTrueCount() <= 0) {
+        this.retroBetCoefficient = 1;
+      }
+    }
+    return this.retroBetCoefficient;
   }
 
   makeInsuranceBet() {

@@ -1,0 +1,174 @@
+<div class="bet-spread-chart-maker-container">
+  <h2>Create Edit or View Bet Spread Charts</h2>
+  <div class="mode-selections-wrapper">
+    <button 
+      class="add-edit-mode" 
+      [class.selected]="mode === 'add-edit-mode'" 
+      (click)="selectMode('add-edit-mode')"
+    >Open a Chart
+    </button>
+    <button 
+      class="delete-mode" 
+      [class.hidden]="false"
+      [class.selected]="mode === 'delete-mode'" 
+      (click)="selectMode('delete-mode')"
+    >Delete
+    </button>
+    <button 
+      class="select-mode" 
+      [class.hidden]="false"
+      [class.selected]="mode === 'select-mode'" 
+      (click)="selectMode('select-mode')"
+    >Select
+    </button>
+  </div>
+  <div class="chart-maker-content-wrapper" *ngIf="mode === 'add-edit-mode'">
+    <div class="selector-and-button-wrapper">
+      <div class="select-wrapper">    
+        <label for="chart-maker-selector"></label>
+        <select name="" id="chart-maker-selector" (change)="handleSelectStrategy($event)">
+          <option disabled selected>Select a Bet Spreading Strategy</option>
+          <option *ngFor="let key of chartMaker.chartKeys" [value]="key">{{key}}</option>
+        </select>
+      </div>
+      <button *ngIf="!newStrategyView" (click)="createNewStrategy()">Create a new strategy</button>
+    </div>
+  </div>
+  <div class="display-grid" *ngIf="spreads.length > 0 && !newStrategyView">
+    <h3>{{ selectedStrategyTitle }}</h3>
+    <p *ngIf="isBlackListed" class="instruction">This Chart cannot be edited. You may create your own chart by clicking <i>Create a new strategy</i></p>
+    <div class="inner-display-grid">
+      <div class="grid-line header">
+        <span class="count-header">Count</span>
+        <span  class="betting-units-header" *ngFor="let title of chartTitles; index as i">
+          {{title}}
+        </span>
+      </div>
+      <div class="grid-line" *ngFor="let customI of countIndexes; index as y">
+        <span class="count">{{ customI }}</span>
+        <span  class="betting-units" *ngFor="let spread of spreads; index as x">
+          {{ spread[customI] }}
+        </span>
+      </div>
+    </div>
+    <p class="rounding-instructions">{{ roundingInstructions }}</p>
+  </div>
+  <div class="new-strategy-view" *ngIf="newStrategyView && !showCustomChart">
+    <div class="input-wrapper">
+      <div class="inner-input-wrapper">
+        <p>Name this strategy.</p>
+        <input 
+          id="bet-spread-name" 
+          type="text" 
+          [(ngModel)]="newChartName" 
+          (change)="handelNameChange($event)"
+        >
+      </div>
+    </div>
+    <div class="input-wrapper">
+      <p class="explanation">Maximum count with a unique betting unit size</p>
+      <div class="inner-input-wrapper">
+        <label>Counts above than the maxium count will bet as the maximum count bets.</label>
+        <input
+          type="number"
+          min="0" max="12"
+          [(ngModel)]="maxCount"  
+          (change)="handleMaxCountChange($event)"
+        >
+      </div>
+    </div>
+    <div class="input-wrapper">
+      <p class="explanation">Minimum count with a bet</p>
+       <div class="inner-input-wrapper">
+        <label>Counts below than the minimum count will bet as the maximum count bets.</label>
+        <input 
+          type="number"  
+          min="-10" max="0"
+          [(ngModel)]="minCount"  
+          (change)="handleMinCountChange($event)"
+        >
+       </div> 
+    </div>
+    <div class="input-wrapper">
+      <p class="explanation">
+        Count from the minimum count to the maximum count by this step size
+      </p>
+       <div class="inner-input-wrapper radio">
+        <div class="radio-wrapper" *ngFor="let option of countByStrategyOptions">
+          <label>{{ option }}</label>
+          <input 
+            type="radio" 
+            [value]="option"
+            [checked]="option === selectedCountByStrategy"
+            (change)="handleCountByStrategyRadioChange($event)"
+          />
+        </div>
+       </div> 
+    </div>
+    <div class="input-wrapper">
+      <p class="explanation">
+        Handle bet spreads differently depending how much of the shoe has been dealt
+      </p>
+      <div class="inner-input-wrapper">
+        <label>How many parts would you like to break the shoe into?</label>
+        <input 
+          type="number" 
+          min="1" max="10" step="1"
+          [(ngModel)]="shoeParts"  
+          (change)="handleShoePartsChange($event)"
+        >
+      </div>
+    </div>
+    <div class="input-wrapper">
+      <p class="explanation">Round up or down with partial betting units, .</p>
+      <div class="inner-input-wrapper radio">
+        <div class="radio-wrapper" *ngFor="let option of roundingStrategyOptions">
+          <label>{{ option }}</label>
+          <input 
+            type="radio" 
+            [value]="option"
+            [checked]="option === selectedRoundingStrategy"
+            (change)="handleRoundingStrategyRadioChange($event)"
+          />
+        </div>
+      </div>
+    </div>
+    <div class="input-wrapper">
+      <p class="explanation">Round to a white chip or a red chip with partial betting units.</p>
+      <div class="inner-input-wrapper radio">
+        <div class="radio-wrapper" *ngFor="let option of chipRoundStrategyOptions">
+          <label>{{ option }}</label>
+          <input 
+            type="radio" 
+            [value]="option"
+            [checked]="option === selectChipRoundStrategy"
+            (change)="handleChipRoundingStrategyRadioChange($event)"
+          />
+        </div>
+      </div>
+    </div>
+    <button *ngIf="hasChartData$ | async" (click)="generateCustomChart()">
+      Generate New Bet Spread Chart
+    </button>
+  </div>
+  <div class="custom-chart" *ngIf="showCustomChart">
+    <div class="grid-line header">
+      <span class="count-header">Count</span>
+      <span  class="betting-units-header" *ngFor="let title of customChart.titles; index as i">
+        {{title}}
+      </span>
+    </div>
+    <div class="grid-line" *ngFor="let customI of customChart.countIndexes; index as y">
+      <span class="count">{{ customI }}</span>
+      <input 
+        type="number" 
+        min="0" max="50" step="1"
+        *ngFor="let bet of customChart.betRay; index as x" 
+        [(ngModel)]="customChart.betRay[x][customI]"
+      >
+    </div>
+    <div class="save-button-wrapper">
+      <button class="save-button" (click)="addStrategyToLS()">Save {{newChartName}}</button>
+    </div>
+  </div>
+</div>

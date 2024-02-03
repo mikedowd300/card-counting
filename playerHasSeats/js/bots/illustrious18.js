@@ -1,18 +1,17 @@
 class Illustrious18Bot {
 
-  constructor() {}
+  constructor(getRetroResizeCoefficient) {
+    this.getRetroResizeCoefficient = getRetroResizeCoefficient;
+  }
 
-  insuranceAt = conditions.basicStrategySettings.insuranceAt
-  bettingUnit = conditions.basicStrategySettings.bettingUnit
-  // addHandsAt = conditions.basicStrategySettings.addHandsAt
-  // decreaseHandsAt = conditions.basicStrategySettings.decreaseHandsAt
+  insuranceAt = conditions.basicStrategySettings.insuranceAt;
+  bettingUnit = conditions.basicStrategySettings.bettingUnit;
   betSpread = conditions.basicStrategySettings.betSpread;
+  split10s = conditions.basicStrategySettings.split10s;
 
   chooseInsuranceOption = () => {
     return shoe.getHiLoTrueCount() >= this.insuranceAt ? 'ACCEPT' : 'DECLINE';
   }
-
-  resizeBettingUnit = () => 10; // For now
 
   resizeBet = () => {
     const count = shoe.getHiLoTrueCount();
@@ -24,7 +23,7 @@ class Illustrious18Bot {
     } else {
       multiplierIndex = Math.max(0, shoe.getHiLoTrueCount());
     }
-    return this.bettingUnit * this.betSpread[multiplierIndex];
+    return this.bettingUnit * this.getRetroResizeCoefficient() * this.betSpread[multiplierIndex];
   };
 
   chooseOption = ({ cardValue }, hand) => {
@@ -40,6 +39,7 @@ class Illustrious18Bot {
     const isSurrenderable = hand.isSurrenderable() && options.includes('SURRENDER');
     const isHittable = hand.isHittable() && options.includes('HIT');
     const isDoubleable = hand.isDoubleable() && options.includes('DOUBLE');
+    const DAS = conditions.canDoubleAfterSplit; // This may be redundant since isDoubleable should account for this, but it wont hurt
 
     const trueCount = shoe.getHiLoTrueCount();
 
@@ -85,25 +85,41 @@ class Illustrious18Bot {
       return 'SPLIT';
     }
     if(isSplittable) {
-      let againstDealers9 = [2, 3, 4, 5, 6, 8, 9];
-      let againstDealers7 = [2, 3, 4, 5, 6, 7];
-      let againstDealers6 = [2, 3, 4, 5, 6];
-      let againstDealers4 = [5, 6];
-      let againstDealers3 = [2, 3, 4, 5, 6, 7];
-      let againstDealers2 = [2, 3, 4, 5, 6, 7];
-
-      if(firstCardValue === 9 && againstDealers9.includes(upCard) ||
-        firstCardValue === 7 && againstDealers7.includes(upCard) ||
-        firstCardValue === 6 && againstDealers6.includes(upCard) ||
-        firstCardValue === 4 && againstDealers4.includes(upCard) ||
-        firstCardValue === 3 && againstDealers3.includes(upCard) ||
-        firstCardValue === 2 && againstDealers2.includes(upCard)) {
+      let against9s = [2, 3, 4, 5, 6, 8, 9];
+      let against7s = [2, 3, 4, 5, 6, 7];
+      let against6s = DAS ? [2, 3, 4, 5, 6] : [3, 4, 5, 6];
+      let against4s = DAS ? [5, 6] : [];
+      let against3s = DAS ? [2, 3, 4, 5, 6, 7] : [4, 5, 6, 7];
+      let against2s = DAS ? [2, 3, 4, 5, 6, 7] : [4, 5, 6, 7];
+      let against10s = (this.split10s && trueCount >= 4) ? [6] : [];
+      if(this.split10s && trueCount >= 5) {
+        against10s.push(5);
+      }
+      if(this.split10s && trueCount >= 6) {
+        against10s.push(4);
+      }
+      if(
+          (firstCardValue === 10 && against10s.includes(upCard)) ||
+          (firstCardValue === 9 && against9s.includes(upCard)) ||
+          (firstCardValue === 7 && against7s.includes(upCard)) ||
+          (firstCardValue === 6 && against6s.includes(upCard)) ||
+          (firstCardValue === 4 && against4s.includes(upCard)) ||
+          (firstCardValue === 3 && against3s.includes(upCard)) ||
+          (firstCardValue === 2 && against2s.includes(upCard)) 
+        ) {
         return 'SPLIT';
       }    
     }
     if(isSoft && isDoubleable) {
       if(handValue === 19) {
-        if(upCard === 6) {
+        let doublesAgainst = [6];
+        if(trueCount >= 1) {
+          doublesAgainst.push(5);
+        }
+        if(trueCount >= 3) {
+          doublesAgainst.push(4);
+        }
+        if(doublesAgainst.includes(upCard)) {
           return 'DOUBLE';
         }
       }
@@ -115,6 +131,9 @@ class Illustrious18Bot {
       }
       if(handValue === 17) {
         const doublesAgainst = [3, 4, 5, 6];
+        if(trueCount >= 1) {
+          doublesAgainst.push(2);
+        }
         if(doublesAgainst.includes(upCard)) {
           return 'DOUBLE';
         }
@@ -161,10 +180,8 @@ class Illustrious18Bot {
       }
       if(handValue === 10) {
         let doublesAgainst = [2, 3, ,4, 5, 6, 7, 8, 9];
-        if(trueCount >= 7) {
+        if(trueCount >= 4) {
           doublesAgainst.push(10);
-        }
-        if(trueCount >= 5) {
           doublesAgainst.push(1);
         }
         if(doublesAgainst.includes(upCard)) {
@@ -176,7 +193,7 @@ class Illustrious18Bot {
         if(trueCount >= 1.5) {
           doublesAgainst.push(2);
         }
-        if(trueCount >= 5) {
+        if(trueCount >= 3) {
           doublesAgainst.push(7);
         }
         if(doublesAgainst.includes(upCard)) {
@@ -185,6 +202,15 @@ class Illustrious18Bot {
       }
     }
     if(isHittable) {
+      if(handValue === 16 && trueCount > 0 && upCard === 10) {
+        return 'STAY';
+      }
+      if(handValue === 16 && trueCount >= 4 && upCard === 9) {
+        return 'STAY';
+      }
+      if(handValue === 15 && trueCount >= 4 && upCard === 10) {
+        return 'STAY';
+      }
       const genericHittableValues = [16, 15, 14, 13];
       if(genericHittableValues.includes(handValue) && (upCard > 6 || upCard === 1)) {
         return 'HIT';
