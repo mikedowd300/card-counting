@@ -1,0 +1,43 @@
+.display-by-count-wrapper {
+  border: 1px solid black;
+
+  .filter-wrapper {
+    margin: 12px 0;
+    padding: 12px;
+    border: 1px solid blue;
+    text-align: center;
+    font-size: 18px;
+
+    .input-wrapper {
+      display: flex;
+      justify-content: space-evenly;
+
+      label {
+        padding-right: 24px;
+        display: flex;
+        align-items: center;
+
+        input {
+          width: 40px;
+          padding: 6px;
+          margin-left: 8px;
+        }
+      }
+
+      button {
+        padding: 8px;
+        background-color: blue;
+        border: white;
+        color: white;
+        border-radius: 3px;
+        font-size: 18px;
+
+        &:hover {
+          background-color: white;
+          border: blue;
+          color: blue;
+        }
+      }
+    }
+  }
+}

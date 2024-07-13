@@ -1,0 +1,31 @@
+<div class="display-by-count-wrapper" *ngIf="chartId">
+  <div class="chart-container">
+    <canvas [id]="chartId">{{ chart }}</canvas>
+  </div>
+  <div class="filter-wrapper">
+    <p>Filter Out</p>
+    <div class="input-wrapper">
+      <label for="filter-below">
+        <span>Counts at or Below:</span>
+        <input 
+          id="filter-below" 
+          type="number" 
+          max="-1" 
+          [(ngModel)]="filterAtOrBelow"
+          (change)="ensureRange('below')"
+        >
+      </label>
+      <label for="filter-above">
+        <span>Counts at or Above:</span>
+        <input 
+          id="filter-below" 
+          type="number" 
+          min="1" 
+          [(ngModel)]="filterAtOrAbove"
+          (change)="ensureRange('above')"
+        >
+      </label>
+      <button *ngIf="filterAtOrBelow || filterAtOrAbove" (click)="filterCounts()">Filter</button>
+    </div>
+  </div>
+</div>

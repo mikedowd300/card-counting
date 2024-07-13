@@ -1,0 +1,166 @@
+:host {
+
+  .data-collector-wrapper {
+    padding: 12px;
+    position: relative;
+    z-index: 1;
+
+    .spinner {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100vh;
+      background-color: rgba(255, 255, 255, .9);
+      z-index: 9999;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 42px;
+    }
+  } 
+
+  h2 {
+    margin-top: -58px;
+    padding-right: 36px;
+    text-align: center;
+  }
+
+  .config-wrapper {
+    border-top: 1px solid black;
+    padding-top: 12px;
+    display: flex;
+    justify-content: space-around;
+
+    .select-wrapper {
+      width: 40%;
+      min-width: 280px;
+      display: flex;
+      justify-content: center;
+
+      &:nth-child(odd) {
+        width: 60%;
+      }
+
+      select {
+        height: 28px;
+        font-size: 16px;
+        padding: 2px;
+        text-align: center;
+        width: 180px;
+      }
+
+      .other-input-wrapper {
+        flex-direction: row;
+        width: 100%;
+
+        input, button {
+          box-sizing: border-box;
+          height: 28px;
+          font-size: 16px;
+          padding: 2px;
+          text-align: center;
+        }
+
+        input {
+          margin-right: 4px;
+        }
+      }
+    }
+
+    @media only screen and (max-width: 599px) {
+      flex-direction: column;
+      
+      .select-wrapper {
+        width: 100%;
+        
+        &:nth-child(odd) {
+          margin-bottom: 24px;
+          width: 100%;
+        }
+      }
+    }
+  }
+
+  .table-wrapper {
+    margin-top: 12px;
+    border: 1px solid gray;
+    background-color: seagreen;
+    border-radius: 2px;
+
+    .table-info, .player-info {
+      height: 200px;
+    }
+
+    .table-info {
+      padding-top: 12px;
+      text-align: center;
+      color: transparent;
+      display: flex;
+      justify-content: center;
+
+      &.active {
+        color: white
+      }
+
+      .table-info-section {
+        margin: 2px;
+        border: 1px solid gray;
+        padding: 4px;
+        width: 25%;
+
+        &.middle {
+          width: 50%;
+        }
+      }
+    }
+
+    .player-info { 
+      margin-top: 12px;
+      box-sizing: border-box;
+      width: 100%;
+      height: 200px;
+      display: flex;
+      flex-direction: row-reverse;
+      justify-content: space-around;
+
+      .player-spots {
+        border: .5px solid grey;
+        margin: 4px 2px;
+        padding: 4px;
+        width: 25%;
+        color: white;
+        border-radius: 2px;
+
+        .occupied {
+          display: flex;
+          flex-direction: column;
+          text-align: center;
+        }
+      }
+    }
+  }
+
+  .start-button {
+    color: white;
+    margin-top: 18px;
+    padding: 12px;
+    font-size: 18px;
+    border-radius: 2px;
+    border: 1px solid black;
+    background-color: blue;
+
+    i {
+      font-weight: 600;
+    }
+
+    &:hover {
+      cursor: pointer;
+    }
+
+    &:active {
+      color: blue;
+      background-color: white;
+    }
+  }
+}

@@ -31,6 +31,151 @@ class TableComponent {
     this.responsesToInsurance = 0;
     this.trueCountHistory = [];
     this.runningCountHistory = [];
+    this.tableStats = [];
+    this.tableStat = new TableStat();
+    this.statsByTrueCount = {};
+  }
+
+  getStatsByTrueCount() {
+    const minCount = this.tableStats.length < 120000 
+      ? Math.min(...this.tableStats.map(({trueCount}) => trueCount)) 
+      : -12;
+    const maxCount = this.tableStats.length < 120000 
+      ? Math.max(...this.tableStats.map(({trueCount}) => trueCount)) 
+      : 12;
+
+    const winnings = this.tableStats.map(({ totalWinnings }) => totalWinnings)
+      .reduce((partialSum, a) => partialSum + a, 0);
+
+    const allInstances = this.tableStats.length;
+    const overAllAverage = allInstances === 0 ? 0 : Math.round((winnings / allInstances) * 100) / 100;
+
+    for(let i = minCount; i <= maxCount; i++) {
+      const instances = this.tableStats.filter(({trueCount}) => trueCount === i).length;
+      const totalWinnings = this.tableStats.filter(({trueCount}) => trueCount === i)
+        .map(({ totalWinnings }) => totalWinnings)
+        .reduce((partialSum, a) => partialSum + a, 0);
+      const average = instances === 0 ? 0 : Math.round((totalWinnings / instances) * 100) / 100;
+      this.statsByTrueCount[i] = { instances, totalWinnings, average }
+    }
+
+    return(this.statsByTrueCount);
+  }
+
+  getAceCountsForTrueCountAt(count) {
+    const aceResultsMap = {
+      '8': { key: '8-8', instances: 0, winnings: 0, average: 0},
+      '-4': { key: '8-7', instances: 0, winnings: 0, average: 0},
+      '-17': { key: '8-6', instances: 0, winnings: 0, average: 0},
+      '-29': { key: '8-5', instances: 0, winnings: 0, average: 0},
+      '-42': { key: '8-4', instances: 0, winnings: 0, average: 0},
+      // '-55': { key: '8-3', instances: 0, winnings: 0, average: 0},
+      // '8-67': { key: '8-2', instances: 0, winnings: 0, average: 0},
+
+      '21': { key: '7-8', instances: 0, winnings: 0, average: 0},
+      '7': { key: '7-7', instances: 0, winnings: 0, average: 0},
+      '-7': { key: '7-6', instances: 0, winnings: 0, average: 0},
+      '-22': { key: '7-5', instances: 0, winnings: 0, average: 0},
+      '-36': { key: '7-4', instances: 0, winnings: 0, average: 0},
+      '-50': { key: '7-3', instances: 0, winnings: 0, average: 0},
+      '-64': { key: '7-2', instances: 0, winnings: 0, average: 0},
+      '-79': { key: '7-1', instances: 0, winnings: 0, average: 0},
+      '-93': { key: '7-0', instances: 0, winnings: 0, average: 0},
+
+      '39': { key: '6-8', instances: 0, winnings: 0, average: 0},
+      '23': { key: '6-7', instances: 0, winnings: 0, average: 0},
+      '6': { key: '6-6', instances: 0, winnings: 0, average: 0},
+      '-11': { key: '6-5', instances: 0, winnings: 0, average: 0},
+      '-27': { key: '6-4', instances: 0, winnings: 0, average: 0},
+      '-44': { key: '6-3', instances: 0, winnings: 0, average: 0},
+      '-61': { key: '6-2', instances: 0, winnings: 0, average: 0},
+      '-77': { key: '6-1', instances: 0, winnings: 0, average: 0},
+      '-94': { key: '6-0', instances: 0, winnings: 0, average: 0},
+
+      '65': { key: '5-8', instances: 0, winnings: 0, average: 0},
+      '45': { key: '5-7', instances: 0, winnings: 0, average: 0},
+      '25': { key: '5-6', instances: 0, winnings: 0, average: 0},
+      '5': { key: '5-5', instances: 0, winnings: 0, average: 0},
+      '-15': { key: '5-4', instances: 0, winnings: 0, average: 0},
+      '-35': { key: '5-3', instances: 0, winnings: 0, average: 0},
+      '-55': { key: '5-2', instances: 0, winnings: 0, average: 0},
+      '-75': { key: '5-1', instances: 0, winnings: 0, average: 0},
+      '-95': { key: '5-0', instances: 0, winnings: 0, average: 0},
+
+      '104': { key: '4-8', instances: 0, winnings: 0, average: 0},
+      '79': { key: '4-7', instances: 0, winnings: 0, average: 0},
+      '54': { key: '4-6', instances: 0, winnings: 0, average: 0},
+      '29': { key: '4-5', instances: 0, winnings: 0, average: 0},
+      '4': { key: '4-4', instances: 0, winnings: 0, average: 0},
+      '-21': { key: '4-3', instances: 0, winnings: 0, average: 0},
+      '-46': { key: '4-2', instances: 0, winnings: 0, average: 0},
+      '-71': { key: '4-1', instances: 0, winnings: 0, average: 0},
+      '-96': { key: '4-0', instances: 0, winnings: 0, average: 0},
+
+      '170': { key: '3-8', instances: 0, winnings: 0, average: 0},
+      '136': { key: '3-7', instances: 0, winnings: 0, average: 0},
+      '103': { key: '3-6', instances: 0, winnings: 0, average: 0},
+      '70': { key: '3-5', instances: 0, winnings: 0, average: 0},
+      '36': { key: '3-4', instances: 0, winnings: 0, average: 0},
+      '3': { key: '3-3', instances: 0, winnings: 0, average: 0},
+      '-30': { key: '3-2', instances: 0, winnings: 0, average: 0},
+      '-64': { key: '3-1', instances: 0, winnings: 0, average: 0},
+      '-97': { key: '3-0', instances: 0, winnings: 0, average: 0},
+
+      // '302': { key: '2-8', instances: 0, winnings: 0, average: 0},
+      // '252': { key: '2-7', instances: 0, winnings: 0, average: 0},
+      // '202': { key: '2-6', instances: 0, winnings: 0, average: 0},
+      // '152': { key: '2-5', instances: 0, winnings: 0, average: 0},
+      // '102': { key: '2-4', instances: 0, winnings: 0, average: 0},
+      // '52': { key: '2-3', instances: 0, winnings: 0, average: 0},
+      // '2': { key: '2-2', instances: 0, winnings: 0, average: 0},
+      // '-48': { key: '2-1', instances: 0, winnings: 0, average: 0},
+      // '-98': { key: '2-0', instances: 0, winnings: 0, average: 0},
+
+      // '701': { key: '1-8', instances: 0, winnings: 0, average: 0},
+      // '601': { key: '1-7', instances: 0, winnings: 0, average: 0},
+      // '501': { key: '1-6', instances: 0, winnings: 0, average: 0},
+      // '401': { key: '1-5', instances: 0, winnings: 0, average: 0},
+      // '301': { key: '1-4', instances: 0, winnings: 0, average: 0},
+      // '201': { key: '1-3', instances: 0, winnings: 0, average: 0},
+      // '101': { key: '1-2', instances: 0, winnings: 0, average: 0},
+      // '1': { key: '1-1', instances: 0, winnings: 0, average: 0},
+      // '0': { key: '1-0', instances: 0, winnings: 0, average: 0},
+    }
+    console.log(count);
+    const instances = this.tableStats.filter(({trueCount}) => trueCount === count);
+    console.log(instances.length);
+    console.log(instances);
+    instances.forEach(({ aceRatio, totalWinnings }) => {
+      if(count === -1) {
+        console.log(aceRatio, shoe.discardTray.length);
+      }
+      if(aceResultsMap[aceRatio.toString()]) {
+        aceResultsMap[aceRatio.toString()].instances++;
+        aceResultsMap[aceRatio.toString()].winnings += totalWinnings;
+        aceResultsMap[aceRatio.toString()].average = 
+        Math.round((aceResultsMap[aceRatio.toString()].winnings / aceResultsMap[aceRatio.toString()].instances) * 100) / 100; 
+      } else {
+        console.log(aceRatio.toString());
+      }
+    });
+    console.log(`Instances at true count ${count}:`, instances.length);
+    let extendedMap = {};
+    for(let oldKey in aceResultsMap) {
+      const newKey = aceResultsMap[oldKey].key;
+      extendedMap[newKey] = { 
+        instances: aceResultsMap[oldKey].instances, 
+        winnings: aceResultsMap[oldKey].winnings,  
+        average: aceResultsMap[oldKey].average, 
+      };
+    }
+
+    // for(let key in extendedMap) {
+    //   if(extendedMap[key].instances > 0) {
+    //     console.log(key, extendedMap[key]);
+    //   }
+    // }
+    return(extendedMap);
   }
 
   leaveSpot(spotId) {
@@ -39,6 +184,7 @@ class TableComponent {
   }
     
   clearCards() {
+    this.dealtInPlayers.forEach(player => player.setHandOfShoeStat());
     this.dealtInPlayers.forEach(player => player.hands.forEach(hand => {
       shoe.discard(hand.cards);
       hand.view.removeCards();
@@ -115,9 +261,10 @@ class TableComponent {
   getPlayerByIdFromSpots = id => this.players.find(player => player.spots?.includes(id));
 
   removePuppetPlayer = (parentId, childId, id) => {
+    const index = parentId; // TO DO - parentId is not an id, its an index, refactor/rename - its the only value needed
     this.view.removePuppetPlayer(parentId, childId, id);
-    this.getPlayerByIdFromSpots(id).removeIdFromSpots(id);
-    this.players = this.players.filter(player => player.id !== id);
+    this.getPlayerByIdFromSpots(index).removeIdFromSpots(index);
+    this.players = this.players.filter(player => player.id !== index);
     this.spots[id] = { isTaken: false, takenBy: null, id, dealtIn: false };
   }; 
 
@@ -128,8 +275,8 @@ class TableComponent {
 
   setTakenSpots() {
     this.takenSpots = this.spots.filter(spot => {
-      const player = this.getPlayerFromSpot(spot.id)
-      return spot.isTaken && player.bankroll && player.bankroll > 0;// && player(spot.id).isAwake
+      const player = this.getPlayerFromSpot(spot.id);
+      return spot.isTaken && player.bankroll && player.bankroll > 0;
     });
   }
 
@@ -150,11 +297,14 @@ class TableComponent {
   getHasPlayers = () => this.spots.filter(spot => spot.isTaken).length > 0;
 
   placeBets() {
-    // console.log('PLACE_BETS', this.handsCount);
+    this.players.filter(player => !player.puppetMaster)
+      .forEach(player => player.bankrollHistory.push(player.bankroll));
     this.dealer.view.showDealButton();
     this.dealer.view.dealButton.classList.remove('hide');
-    this.players.filter(player => !player.puppetMaster).forEach(player => player.view.showAddSpotButton());
-    this.players.filter(player => player.puppetMaster).forEach(player => player.view.showLeaveSpotButton());
+    this.players.filter(player => !player.puppetMaster)
+      .forEach(player => player.view.showAddSpotButton());
+    this.players.filter(player => player.puppetMaster)
+      .forEach(player => player.view.showLeaveSpotButton());
     this.players.filter(player => player.brainType !== 'HUMAN').forEach(player => {
       player.betSize = player.hands[0].botBrain.resizeBet();
       player.view.betSize.innerHTML = player.getBetSize();
@@ -179,7 +329,6 @@ class TableComponent {
   closeInsurance() {
     if(flow.getCurrentStep() === 'INSURANCE') {
       this.dealer.view.hideInsuranceButton();
-      // console.log('Insurance Closed!!');
       flow.setStep('INSURANCE_PAYOUT');
       this.dealtInPlayers.forEach(player => player.view.hideInsuranceModal());
       this.playStep();
@@ -190,23 +339,28 @@ class TableComponent {
     for(let i = 0; i < conditions.dealLoopIterations; i++) {
       flow.setStep('DEAL');
       this.playStep();
-      if(i % 100 === 0) {
+      if(i % 500 === 0) {
         console.log(i);
       }
     }
   }
 
   deal() {
+    if(this.dealer.cards.length > 0) {
+      this.tableStat.setEndingBankrolls(
+        this.players.filter(player => !player.puppetMaster)
+        .map(({bankroll}) => bankroll)
+      );
+      this.tableStats.push(this.tableStat.getStat());
+      this.tableStat = new TableStat();
+    }
+
     this.resetTable();
     this.players
       .filter(player => !player.puppetMaster && player.brainType !== 'HUMAN')
-      .forEach(player => {
-        player.bankrollHistory.push(player.bankroll);
-        player.multiplierHistory.push(player.hands[0].botBrain.multiplier)
-      });
+      .forEach(player => player.multiplierHistory.push(player.hands[0].botBrain.multiplier));
     this.trueCountHistory.push(shoe.getHiLoTrueCount());
-    this.runningCountHistory.push(shoe.hiLoRunningCount);
-    // console.log('DEAL');
+    this.runningCountHistory.push(shoe.getHiLoRunningCount());
     this.handsCount++;
     this.dealer.view.hideDealButton();
     if(flow.getCurrentStep() === 'DEAL' && this.getHasPlayers()) {
@@ -229,7 +383,6 @@ class TableComponent {
   };
 
   insurance() {
-    // console.log('INSURANCE');
     this.dealer.view.showInsuranceButton();
     this.dealtInPlayers.forEach(player => player.view.showInsuranceModal());
     this.players
@@ -259,7 +412,6 @@ class TableComponent {
   }
     
   insurancePayout() {
-    // console.log('INSURANCE_PAYOUT');
     this.dealtInPlayers.forEach(player => player.payInsuranceBet(this.dealer.hasBlackJack()));
     this.syncPuppetBankrolls();
     flow.setStep('DEALER_BLACKJACK_PAYOUT');
@@ -267,7 +419,6 @@ class TableComponent {
   } 
 
   dealerBlackJackPayout() {
-    // console.log('DEALER_BLACKJACK_PAYOUT');
     if(this.dealer.hasBlackJack()) {
       this.dealtInPlayers
         .forEach(player => { 
@@ -290,7 +441,6 @@ class TableComponent {
   }
 
   playerBlackJackpayouts() {
-    // console.log('PLAYER_BLACKJACK_PAYOUTS');
     this.dealtInPlayers
       .filter(player => !player.hasPlayed && player.hasBlackJack())
       .forEach(player => {
@@ -314,7 +464,6 @@ class TableComponent {
   }
 
   playNextHand() {
-    // console.log('PLAY_HANDS');
     const player = this.dealtInPlayers.filter(player => !player.hasPlayed)[0];
     if(player) {
       player.playHandByHandId(0);
@@ -326,7 +475,6 @@ class TableComponent {
   }
 
   playDealersHand() {
-    // console.log('PLAY_DEALERS_HAND');
     this.dealer.flipHoleCard();
     this.dealer.playHand();
     flow.setStep('PAYOUT');
@@ -334,8 +482,8 @@ class TableComponent {
   };
 
   payout() {
-    // console.log('PAYOUT');
-    this.players.forEach(player => player.hands.filter(hand => !hand.hasBeenPaid).forEach(hand => {
+    this.players.forEach(player => player.hands.filter(hand => !hand.hasBeenPaid)
+    .forEach(hand => {
       if(hand.isBust()) {
         player.payBet(hand.bet * (-1));
         hand.view.updateHistory(hand.getHistory() + ' BUST ' + (hand.bet * (-1)));
@@ -359,16 +507,25 @@ class TableComponent {
   }
 
   handOver() {
-    // console.log('HAND_OVER');
     flow.setStep('PLACE_BETS');
     this.playStep();
   }
 
   resetTable() {
+    if(this.dealer.cards.length > 0) {
+      shoe.handsCount += 1;
+    }
+    // shoe.shuffleCheck();
+    this.tableStat.setTrueCount(shoe.getHiLoTrueCount());
+    this.tableStat.setAceRatio(shoe.getAceRatio());
+    this.tableStat.setBeginningBankrolls(
+      this.players.filter(player => !player.puppetMaster)
+      .map(({bankroll}) => bankroll)
+    );
     this.responsesToInsurance = 0;
     this.clearCards();
     this.dealer.reset();
-    shoe.shuffleCheck();
+    shoe.shuffleCheck(); // DO I WANNA SHUFFKE CHECK AFTER I SET THE STATS?
     this.players.filter(player => !player.puppetMaster).forEach(player => player.view.hideAddSpotButton());
     this.players.filter(player => player.puppetMaster).forEach(player => player.view.hideLeaveSpotButton());
     this.players.forEach(player => player.reset());
@@ -423,15 +580,3 @@ class TableComponent {
       .forEach(player => player.view.updateUIBankroll(player.bankroll));
   }
 }
-  
-//     setMessage(message) {
-//       this.message = message;
-//     }
-  
-//     getMessage() {
-//       return this.message;
-//     }
-  
-//     clearMessage() {
-//       this.setMessage('');
-//     }

@@ -89,6 +89,12 @@ class TableConditionsUI {
         elementType: 'checkbox'
       },
       {
+        rule: 'useRetroResize',
+        title: "Use Retro Resize Strategy",
+        value: conditions.useRetroResize,
+        elementType: 'checkbox'
+      },
+      {
         rule: 'dealLoopIterations',
         title: "Deal Iterations",
         value: conditions.dealLoopIterations,
@@ -132,7 +138,7 @@ class TableConditionsUI {
       },
       {
         rule: 'shufflePoint',
-        title: "Shuffle Point",
+        title: "Shuffle Point (portion of shoe dealt)",
         value: conditions.shufflePoint,
         elementType: 'text'
       },
@@ -169,6 +175,7 @@ class TableConditionsUI {
       .forEach((value, trueCount) => jq.appendElem(this.basicStrategyForm, this.getBetSpreadTemplate(trueCount, value)))
     this.insuranceAtElem = jq.getElById(this.getInsuranceAtSelector()); 
     this.bettingUnitElem = jq.getElById(this.getBettingUnitSelector()); 
+    this.splitTensElem = jq.getElById(this.getSplit10sSelector()); 
   }
 
   updateConditions() {
@@ -192,6 +199,7 @@ class TableConditionsUI {
       ...this.basicStrategySettings, 
       insuranceAt: this.insuranceAtElem.value,
       bettingUnit: this.bettingUnitElem.value,
+      split10s: this.splitTensElem.value,
       betSpread: this.getBetSpreadValues(),
     }
   };
@@ -223,6 +231,7 @@ class TableConditionsUI {
   getBasicStrategyFormSelector = () => `basic-strategy-form`;
   getInsuranceAtSelector = () => `insurance-at`;
   getBettingUnitSelector = () => `betting-unit`;
+  getSplit10sSelector = () => `split-tens`;
   getBetSpreadSelector = (trueCount) => `bet-spread-${trueCount}`;
 
   getTemplate = () => (
@@ -231,6 +240,10 @@ class TableConditionsUI {
       <form id="conditions-form" action="#"></form>
       <h1 class="strategy-title">Basic Strategy Settings</h1>
       <form id="basic-strategy-form" action="#">
+        <div class="form-element flex checkbox">
+          <input type="checkbox" id="split-tens" name="split-tens" value="${this.basicStrategySettings.split10s}" ${this.basicStrategySettings.split10s ? 'checked' : ''}>
+          <label for="split-tens">Split 10s</label>
+        </div>
         <div class="form-element flex text">
           <input type="text" id="betting-unit" name="betting-unit" value="${this.basicStrategySettings.bettingUnit}">
           <label for="betting-unit">Betting Unit</label>

@@ -1,0 +1,42 @@
+.display-wrapper {
+  box-sizing: border-box;
+  padding: 0 16px 16px;
+  min-height: 100vh;
+
+  .tabs {
+    display: flex;
+    width: 100%;
+    border-bottom: 1px solid black;
+    justify-content: center;
+
+    button {
+      padding: 12px 16px;
+      font-size: 18px;
+      border-radius: 3px 3px 0 0;
+      background-color: transparent;
+      border-bottom: none;
+
+      &.selected {
+        background-color: cadetblue;
+        columns: white;
+      }
+    }
+  }
+
+  .chart-container {
+    height: auto;
+    overflow: hidden;
+
+    &.hidden {
+      height: 0;
+    }
+  }
+
+  .table-info {
+    box-sizing: border-box;
+
+    .ace-effect:nth-child(odd) {
+      background-color: aqua;
+    }
+  }
+}

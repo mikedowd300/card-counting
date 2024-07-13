@@ -38,7 +38,7 @@ class HandComponent {
       'HOME_MADE': new HomeMadeBot(),
       'BASIC_STRATEGY': new BasicStrategyBot(),
       'NEVER_BUST': new NeverBustBot(),
-      'ILLUSTRIOUS_18': new Illustrious18Bot(),
+      'ILLUSTRIOUS_18': new Illustrious18Bot(this.methodsBag.getRetroResizeCoefficient),
     };
     return botMap[type];
   }

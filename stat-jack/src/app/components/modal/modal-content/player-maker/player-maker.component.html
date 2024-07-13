@@ -1,0 +1,106 @@
+<div class="player-maker-container">
+  <h2>Manage Players</h2>
+  <div class="mode-selections-wrapper">
+    <button 
+      class="add-edit-mode" 
+      [class.selected]="mode === 'add-edit-mode'" 
+      (click)="selectMode('add-edit-mode')"
+    >{{addOrEditModeButtonText}}
+    </button>
+    <button 
+      class="delete-mode" 
+      [class.hidden]="playerConfigsArray.length < 1"
+      [class.selected]="mode === 'delete-mode'" 
+      (click)="selectMode('delete-mode')"
+    >Delete
+    </button>
+    <button 
+      class="select-mode" 
+      [class.hidden]="playerConfigsArray.length < 1"
+      [class.selected]="mode === 'select-mode'" 
+      (click)="selectMode('select-mode')"
+    >Select
+    </button>
+  </div>
+  <div class="player-maker-content-wrapper" *ngIf="mode === 'add-edit-mode'">
+    <div class="selector-and-button-wrapper">
+      <div class="select-wrapper">    
+        <select (change)="handleSelectPlayer($event)">
+          <option *ngFor="let key of playerConfigsArray" [value]="key">{{key}}</option>
+        </select>
+      </div>
+      <button *ngIf="buttonText" (click)="handlePlayerCTA($event)">{{ buttonText }}</button>
+    </div>
+    <div class="player-content">
+      <div class="player-wrapper handle">
+        <span>Change the handle to create a new player</span>
+        <input
+          type="text"
+          [(ngModel)]="playerConfig.handle.value"
+          (change)="handleHandleChange($event)"
+        />
+      </div>
+      <div *ngFor="let key of playerConfigKeys" class="player-wrapper">
+        <div class="player">
+          <span class="vertically-center">{{ playerConfig[key].description }}</span>
+          <span class="text-area-wrapper" *ngIf="playerConfig[key].displayWith === 'textarea'">
+            <textarea [(ngModel)]="playerConfig[key].value">
+              {{ playerConfig[key].value }}
+            </textarea>
+          </span>
+          <span class="text-wrapper" *ngIf="playerConfig[key].displayWith === 'text'">
+            <input
+              type="text"
+              [(ngModel)]="playerConfig[key].value"
+            />
+          </span>
+          <span class="checkbox-wrapper" *ngIf="playerConfig[key].displayWith === 'checkbox'">
+            <input
+              type="checkbox"
+              [(ngModel)]="playerConfig[key].value"
+            />
+          </span>
+          <span class="select-wrapper" *ngIf="playerConfig[key].displayWith === 'select'">
+            <select id="" [(ngModel)]="playerConfig[key].value">
+              <ng-container *ngIf="key === 'playingStrategy'">
+                <option *ngFor="let strategy of playStrategies" [value]="strategy">{{strategy}}</option>
+              </ng-container>
+              <ng-container *ngIf="key === 'betSpreadingStrategy'">
+                <option *ngFor="let strategy of betSpreadingStrategies" [value]="strategy">{{strategy}}</option>
+              </ng-container>
+              <ng-container *ngIf="key === 'insuranceStrategy'">
+                <option *ngFor="let strategy of insuranceStrategies" [value]="strategy">{{strategy}}</option>
+              </ng-container>
+              <ng-container *ngIf="key === 'earlySurrenderStrategy'">
+                <option *ngFor="let strategy of earlySurrenderStrategies" [value]="strategy">{{strategy}}</option>
+              </ng-container>
+              <ng-container *ngIf="key === 'lateSurrenderStrategy'">
+                <option *ngFor="let strategy of lateSurrenderStrategies" [value]="strategy">{{strategy}}</option>
+              </ng-container>
+              <ng-container *ngIf="key === 'unitResizingStrategy'">
+                <option *ngFor="let strategy of unitResizingService.configKeys" [value]="strategy">
+                  {{strategy}}
+                </option>
+              </ng-container>
+              <ng-container *ngIf="key === 'coverPlayStrategy'">
+                <option *ngFor="let strategy of coverPlayStrategiesArray" [value]="strategy">
+                  {{strategy}}
+                </option>
+              </ng-container>
+              <ng-container *ngIf="key === 'wongingStrategy'">
+                <option *ngFor="let strategy of wongingService.configKeys" [value]="strategy">
+                  {{strategy}}
+                </option>
+              </ng-container>
+              <ng-container *ngIf="key === 'tippingStrategy'">
+                <option *ngFor="let strategy of tippingService.configKeys" [value]="strategy">
+                  {{strategy}}
+                </option>
+              </ng-container>
+            </select>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

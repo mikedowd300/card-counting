@@ -1,0 +1,66 @@
+<div class="data-collector-wrapper" *ngIf="tableObj.conditions as conditions">
+  <h2>Select a Table and Play Hands to Create Data</h2>
+
+  <div class="config-wrapper">
+    <div class="select-wrapper">
+      <select (change)="handleSelectTable($event.target)">
+        <option value="" selected disabled>Select a table...</option>
+        <option *ngFor="let key of tableKeys" [value]="key">
+          {{ key }}
+        </option>
+      </select>
+    </div>
+  
+    <div class="select-wrapper">
+      <select *ngIf="!useInput" (change)="handleSelectIterationOption($event.target)">
+        <option value="" selected disabled>How many iterations?</option>
+        <option *ngFor="let option of iterationOptions" [value]="option">{{option}}</option>
+      </select>
+      <div class="other-input-wrapper" *ngIf="useInput">
+        <input 
+          class="iterations" 
+          type="text" 
+          (change)="handleIterationsInput($event.target)"
+          placeholder="How many iterations?"
+        />
+        <button (click)="toggleUseInput()">Dropdown</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="table-wrapper">
+    <div class="table-info" [class.active]="tableComplete$ | async">
+      <div class="table-info-section left">
+        <p> min: {{conditions.minBet}}</p>
+        <p> max: {{conditions.maxBet}}</p>
+      </div>
+      <div class="table-info-section middle">
+        <p>Blackjack pays {{conditions.payRatio}}</p>
+        <p>Dealer {{conditions.SI7 ? "stays" : "hits"}} on soft 17</p>
+        <p>{{ surrenderRules[conditions.surrender] }}</p>
+        <p *ngIf="conditions.holeCardType !== 'Standard'">{{ conditions.holeCardType }}</p>
+      </div>
+      <div class="table-info-section right">
+        <p>{{conditions.decksPerShoe}} deck{{conditions.decksPerShoe === 1 ? '' : 's'}} with {{conditions.shufflePoint}} penn</p>
+      </div>
+    </div>
+    <div class="player-info">
+      <div *ngFor="let spot of tableSpots" class="player-spots">
+        <div *ngIf="spot?.handle" class="occupied">
+          <span>{{spot.handle}}</span>
+          <span>Betting unit: {{spot.bettingUnit}}</span>
+          <span>bankroll: {{spot.bankroll}}</span>
+          <span>play strategy: {{spot.playingStrategy}}</span>
+          <div>Details</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <button class="start-button" *ngIf="showStartButton$ | async" (click)="startHandIterations()">
+    <span>{{'Play ' + tableObj.iterations + ' hands on table: '}}</span>
+    <i>{{selectedTableName}}</i>
+  </button>
+  <div class="spinner" *ngIf="showSpinner">
+    Spinning...
+  </div>
+</div>

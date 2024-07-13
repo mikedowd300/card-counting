@@ -1,0 +1,58 @@
+<div class="display-wrapper">
+  <div class="tabs">
+    <button class="selected" (click)="handleTabSelection('Table', $event)">Table</button>
+    <button 
+      *ngFor="let name of playerNames"
+      (click)="handleTabSelection(name, $event)"
+    >
+      {{ name }}
+    </button>
+  </div>
+
+  <div *ngIf="selectedDisplayTab === 'Table'" class="table-info">
+    <h2>Table Specific Info</h2>
+    <total-average-percentage-charts 
+      prefix="table" 
+      [data]="tableDataByCount"
+    >
+    </total-average-percentage-charts>
+  </div>
+
+  <div class="player-info" *ngIf="selectedDisplayTab !== 'Table' && !!playerBankrollChart">
+    <h2>Player Specific Info</h2>
+
+    <div class="chart-container"> <!-- [class.hidden]='bankrollChartHidden'> -->
+      <!-- <canvas id="player-bankroll-chart">{{ playerBankrollChart }}</canvas> -->
+    </div>
+
+    <total-average-percentage-charts 
+      prefix="player" 
+      [data]="playerDataByCount"
+    >
+    </total-average-percentage-charts>
+
+    <!-- <div>
+      <select 
+        [(ngModel)]="activePlayerName"
+        (change)="handleSelectActivePlayer()"
+      >
+        <option disabled selected>Select a Player</option>
+        <option *ngFor="let playerName of playerNames" [value]="playerName">{{ playerName }}</option>
+      </select>
+      <button 
+        *ngIf="!bankrollChartHidden" 
+        (click)="switchTableData()"
+      >
+        Show Table Info
+      </button>
+    </div> -->
+
+
+    <!-- <statjack-chart-v2 
+      *ngIf="!bankrollChartHidden && playerWinningsByCountChart"
+      [data]="playerWinningsByCountChart" 
+      prefix="player-winnings"
+    >
+    </statjack-chart-v2> -->
+  </div>
+</div>

@@ -1,0 +1,1 @@
+const royalFlushes = ["AC JC QC KC TC", "AD JD QD KD TD", "AH JH QH KH TH", "AS JS QS KS TS"];
