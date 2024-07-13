@@ -19,7 +19,8 @@ export class StatJackService {
     [ModalContent.TABLE_MAKER]: false,
     [ModalContent.INSURANCE_STRATEGY]: false,
     [ModalContent.WONG_STRATEGY]: false,
-    [ModalContent.TIPPING_STRATEGY]: false
+    [ModalContent.TIPPING_STRATEGY]: false,
+    [ModalContent.DATA_DISPLAY]: false,
   };
 
   public showModal$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);

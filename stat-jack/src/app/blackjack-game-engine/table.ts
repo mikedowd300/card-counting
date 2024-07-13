@@ -19,6 +19,9 @@ import { InsuranceService } from '../services/insurance.service';
 import { UnitResizingService } from '../services/unit-resizing.service';
 import { WongingService } from '../services/wonging.service';
 import { TippingService } from '../services/tipping.service';
+import { GameHistory } from '../analytics/gameHistory';
+import { SimplifiedDealerHand } from '../analytics/analytics-models';
+import { BustBonusService } from '../services/bust-bonus.service';
 
 @Injectable({
   providedIn: 'root',
@@ -42,11 +45,9 @@ export class Table {
   unitResizingService: UnitResizingService = new UnitResizingService(this.localStorageService);
   wongingService: WongingService = new WongingService(this.localStorageService);
   tippingService: TippingService = new TippingService(this.localStorageService);
-  record: {
-    dealersHand: null,
-  }; // WIP
+  history: GameHistory = new GameHistory();
 
-  constructor(private tableObj: TableObj) {
+  constructor(private tableObj: TableObj, private bustBonusService: BustBonusService) {
     this.initializeShoe(this.tableObj);
     this.shared = {
       payPlayerInSpot: (x, y) => this.payPlayerInSpot(x, y),
@@ -136,12 +137,16 @@ export class Table {
       this.finalizeRound();
       hasSpots = this.spotManager.spots.filter(s => s.status === SpotStatus.TAKEN).length > 0;
     }
+    // console.log(this.history);
+    // console.log(this.history.getPlayersBankrollHistory('Mike'));
     console.log(this.players.map(p => `${p.handle}:${p.bankroll}:${p.tippedAway}`).join(', '));
     
     console.log(this.players.map(p => {
       const ratio = Math.round(10000 * ((p.bankroll - p.originalBankroll) / p.totalBet)) / 100;
-      return`TOTAL BET:${p.totalBet} : MONEYWONtoMONEYBET RATIO: ${ratio} each of the ${this.totalRoundsDealt}`
+      return`${p.handle}: TOTAL BET:${p.totalBet} : MONEYWONtoMONEYBET RATIO: ${ratio} each of the ${this.totalRoundsDealt}`
     }).join(', '));
+
+    this.bustBonusService.logBustData();
   }
 
   initializeRound() {
@@ -158,6 +163,37 @@ export class Table {
     this.players.forEach(p => p.initializeRound());
 
     // All spots' hadBlackJack properties need to be set to false
+
+    this.initializeHistory();
+  }
+
+  initializeHistory() {
+    const dealerHand: SimplifiedDealerHand = {
+      holeCard: null,
+      allCards: null,
+      didBust: null,
+      hadBlackjack: null,
+      value: null,
+    }
+    this.history.startRoundData(this.shoe.getHandId())
+    this.history.activeRound.handOfShoe = this.shoe.getHandsCount();
+    this.history.activeRound.prePenn = this.shoe.getCardsDealt();
+    this.history.activeRound.postPenn = null;
+    this.history.activeRound.isEndOfShoe = null;
+    this.history.activeRound.beginningTrueCount = this.shoe.getHiLoTrueCountFloor();
+    this.history.activeRound.aceSideCount = this.shoe.getTrueAceSideCount();
+    this.history.activeRound.endingTrueCount = null;
+    this.history.activeRound.beginningRunningCount = this.shoe.getHiLoRunningCount();
+    this.history.activeRound.endingRunningCount = null;
+    this.history.activeRound.dealerHand = dealerHand;
+    this.history.activeRound.players = this.players.map(p => ({
+      handle: p.handle,
+      bettingUnit: p.bettingUnit,
+      startingBankroll: p.bankroll,
+      totalBetThisHand: p.amountBetPerHand,
+      spots: [],
+      tip: p.tippedAway
+    }));
   }
 
   getInsuranceStrategyBySpotId(spotId: number) {
@@ -177,6 +213,9 @@ export class Table {
 
     if(this.isStandardGame()) {
       this.dealerHand.cards.push(this.shoe.dealHoleCard());
+      this.history.activeRound.dealerHand.holeCard = this.dealerHand.cards
+        .filter(c => c.isHoleCard)
+        .map(c => c.name)[0];
     }
     this.totalRoundsDealt++;
   }
@@ -237,9 +276,14 @@ export class Table {
     }
     if(!this.dealerHand.hasBlackjack() && this.spotManager.getTakenUnpaidSpots().length > 0) {
       this.dealerHand.playHand();
+      this.bustBonusService.updateBustData(
+        this.dealerHand.cards[0].cardValue.toString(), 
+        this.shoe.getHiLoTrueCountFloor().toString(), 
+        this.dealerHand.isBust() ? 1 : 0
+      );
     }
   }
-
+ 
   payHands() {
     if(!this.dealerHand.hasBlackjack()) {
       this.spotManager.payHands();
@@ -251,6 +295,7 @@ export class Table {
     // This is also when and where stat objects for a round are finalized.
     // This is where the roundCount is incremented
 
+    this.finalizeRoundHistory();
     this.dealerHand.finalize();
     this.spotManager.getTakenSpots().forEach(spot => spot.finalizeHand());
     this.spotManager.getTakenSpots().forEach(spot => spot.resetHands());
@@ -259,6 +304,20 @@ export class Table {
     this.playedRounds += 1;
     this.removeBrokePlayers();
     this.players.forEach(p => p.finalizeRound());
+  }
+
+  finalizeRoundHistory() {
+    this.history.activeRound.postPenn = this.shoe.getCardsDealt();
+    this.history.activeRound.isEndOfShoe = this.shoe.isShuffleTime();
+    this.history.activeRound.endingTrueCount = this.shoe.getHiLoTrueCountFloor();
+    this.history.activeRound.endingRunningCount = this.shoe.getHiLoRunningCount();
+    this.history.activeRound.dealerHand.allCards = this.dealerHand.cards.map(c => c.name);
+    this.history.activeRound.dealerHand.didBust = this.dealerHand.isBust();
+    this.history.activeRound.dealerHand.hadBlackjack = this.dealerHand.hasBlackjack();
+    this.history.activeRound.dealerHand.value = this.dealerHand.getValue();
+    this.history.activeRound.players
+      .forEach(sp => sp.endingBankroll = this.players.find(p => p.handle === sp.handle).bankroll);
+    this.history.completeRoundData();
   }
 
   getPlayerBySpotId(spotId: number): Player {

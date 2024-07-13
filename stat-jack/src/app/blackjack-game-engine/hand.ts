@@ -85,6 +85,9 @@ export class Hand {
       .filter((x, i) => this.options.includes(options[i]));
 
     let i = 0;
+    if(actionConditions.length === 0 || !Object.keys(actionConditions[0])) {
+      console.log(actionConditions[0]);
+    }
     let action: string = Object.keys(actionConditions[0])[0];
     while(!actionConditions[i][Object.keys(actionConditions[i])[0]]) {
       i++;

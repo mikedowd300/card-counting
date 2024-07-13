@@ -22,6 +22,7 @@ export enum ModalContent {
   INSURANCE_STRATEGY = 'insurance-strategy',
   WONG_STRATEGY = 'wong-strategy',
   TIPPING_STRATEGY = 'tipping-strategy',
+  DATA_DISPLAY = 'data-display',
 };
 
 export enum DisplayTypeEnum {
@@ -301,6 +302,7 @@ export class PlayerObj {
   wongingStrategy: string;
   tippingStrategy: string;
   usesAceCount: boolean;
+  amountBetPerHand?: number;
 }
 
 export class StoredPlayerConfiguration {

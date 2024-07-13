@@ -2,7 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { LocalStorageService } from '../../../../services/local-storage.service';
 import { StoredTableConfig, TableObj, PlayerObj, SurrenderTypesEnum } from 'src/app/models/models';
 import { BehaviorSubject, Observable, combineLatest, map } from 'rxjs';
-import { BlackjackEngineService } from '../../../../blackjack-game-engine/bge.service'
+import { BlackjackEngineService } from '../../../../blackjack-game-engine/bge.service';
+import { ModalContent } from "../../../../models/models";
+import { StatJackService } from './../../../../services/stat-jack.service';
+import { BustBonusService } from '../../../../services/bust-bonus.service';
    
 @Component({
   selector: 'data-collector',
@@ -30,6 +33,7 @@ export class DataCollectorComponent implements OnInit {
   useInput: boolean = false;
   tableSpots: any[] = [];
   surrenderRule: string;
+  showSpinner: boolean = false;
 
   iterationOptions: any[] = [ 1, 5, 10, 100, 1000, 10000, 50000, 100000, 1000000, 'Other' ];
   surrenderRules: {} = {
@@ -39,7 +43,12 @@ export class DataCollectorComponent implements OnInit {
     [SurrenderTypesEnum.LATE]: 'Late surrender is allowed',
   };
 
-  constructor(private localStorageService: LocalStorageService, private bje: BlackjackEngineService) {}
+  constructor(
+    private localStorageService: LocalStorageService, 
+    private bje: BlackjackEngineService,
+    private statJackService: StatJackService,
+    private bustBonusService: BustBonusService,
+  ) {}
 
   ngOnInit() {
     this.tableConfigs = this.localStorageService.getItem('table-configs');
@@ -132,8 +141,14 @@ export class DataCollectorComponent implements OnInit {
   }
 
   startHandIterations() {
-    this.simulationStarted$.next(true);
-    this.bje.createTable(this.tableObj);
+    this.showSpinner = true;
+    setTimeout(() => {
+      this.simulationStarted$.next(true);
+      this.bje.createTable(this.tableObj, this.bustBonusService);
+      this.showSpinner = false;
+      this.statJackService.showModal$.next(true);
+      this.statJackService.updateModalContent(ModalContent.DATA_DISPLAY);
+    }, 50);
   }
 
   getSurrenderString() {

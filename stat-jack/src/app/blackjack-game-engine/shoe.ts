@@ -21,6 +21,7 @@ export class Shoe {
   private cardsBurnedPerShoe: number;
   private shufflePoint: number;
   private localStorage: LocalStorageService;
+  private aceSideCount = 0;
   
   constructor(private conditions: ShoeConditions) {
     this.initializeShoe(); 
@@ -33,6 +34,12 @@ export class Shoe {
     this.shufflePoint = this.conditions.shufflePoint;
     this.aceCount = this.decksPerShoe * 4;
     this.createShoe();
+  }
+
+  getTrueAceSideCount() {
+    const quarterDecksDelt: number = Math.round((this.discardTray.length - this.cardsBurnedPerShoe) / 13);
+    const quartDecksRemaining: number = (this.decksPerShoe * 4) - quarterDecksDelt;
+    return Math.round(((quarterDecksDelt - this.aceSideCount) * 100)  / quartDecksRemaining) / 10;
   }
 
   createShoe(): void {
@@ -98,7 +105,14 @@ export class Shoe {
     }
     this.hiLoRunningCount = 0;
     this.shoeCount += 1;
+    this.aceSideCount = 0;
     return newShoe;
+  }
+
+  isShuffleTime(): boolean {
+    // TODO - replace isShuffleTime in shuffleCheck() with isShuffleTime() AND TEST
+    const fullShoeLength: number = 52 * this.decksPerShoe;
+    return (this.discardTray.length / fullShoeLength) >= this.shufflePoint;
   }
 
   shuffleCheck(): void {
@@ -131,9 +145,10 @@ export class Shoe {
 
   deal(): Card {
     const card: Card = this.cards.pop();
-    this.setHiLoRunningCount(card.hiLoCountValue);
+    this.setHiLoRunningCount(card?.hiLoCountValue);
     // this.setHiLoTrueCount();
     this.updateAceCount(card.cardValue);
+    this.incAceSideCount(card.cardValue);
     return card;
   };
 
@@ -147,6 +162,7 @@ export class Shoe {
     card.isHoleCard = false;
     this.setHiLoRunningCount(card.hiLoCountValue);
     this.updateAceCount(card.cardValue);
+    this.incAceSideCount(card.cardValue);
     // this.setHiLoTrueCount();
   }
 
@@ -163,6 +179,12 @@ export class Shoe {
       this.aceCount -= 1;
     }
   };
+
+  incAceSideCount = (cardValue: number) => {
+    if(cardValue === 1) {
+      this.aceSideCount++;
+    }
+  }
 
   getDecksRemaining = (): number => (this.cards.length + this.cardsBurnedPerShoe) / 52;
 
@@ -199,6 +221,10 @@ export class Shoe {
     shoes[`${this.decksPerShoe}-deck`] = minifiedShoe;
     this.localStorage.setItem('shoes', shoes);
   };
+
+  getCardsDealt() {
+    return this.discardTray.length;
+  }
 
   initializeRound() {
     // // if(this.isFreshShoe) {

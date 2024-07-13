@@ -1,0 +1,39 @@
+<div class="t-a-p-wrapper">
+  <div class="filter-wrapper">
+    <div class="input-wrapper">
+      <label for="filter-below">
+        <span>Filter at or below count of:</span>
+        <input 
+          id="filter-below" 
+          type="number" 
+          max="-1" 
+          [(ngModel)]="filterAtOrBelow"
+          (change)="ensureRange('below')"
+        >
+      </label>
+      <label for="filter-above">
+        <span>Filter at or above count of:</span>
+        <input 
+          id="filter-below" 
+          type="number" 
+          min="1" 
+          [(ngModel)]="filterAtOrAbove"
+          (change)="ensureRange('above')"
+        >
+      </label>
+      <button 
+        *ngIf="filterAtOrBelow || filterAtOrAbove" 
+        (click)="filterCounts()"
+      >
+        Filter
+      </button>
+    </div>
+  </div>
+  <statjack-chart-v2
+    *ngFor="let key of datasetKeys" 
+    [chartId]="datasetMap[key].chartId"
+    [label]="datasetMap[key].label"
+    [singleChartData]="datasetMap[key].chartData"
+    [chartDataType]="key"
+  ></statjack-chart-v2>
+</div>

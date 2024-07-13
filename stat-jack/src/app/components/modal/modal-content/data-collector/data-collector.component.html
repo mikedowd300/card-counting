@@ -60,4 +60,7 @@
     <span>{{'Play ' + tableObj.iterations + ' hands on table: '}}</span>
     <i>{{selectedTableName}}</i>
   </button>
+  <div class="spinner" *ngIf="showSpinner">
+    Spinning...
+  </div>
 </div>

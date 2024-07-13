@@ -140,6 +140,7 @@ export class TableMakerComponent implements OnInit {
       return 1;
     }
     let seatIds = [];
+    console.log(this.tableConfig.tableConditions.value);
     const seatCount: number =  
     this.tableConditionsConfig[this.tableConfig.tableConditions.value as string].spotsPerTable.value;
     for(let s = 1; s <= seatCount; s++) {
@@ -173,7 +174,7 @@ export class TableMakerComponent implements OnInit {
       let spotRay: number[] = [];
 
       const seatCount: number =  
-        this.tableConditionsConfig[this.tableConfig.tableConditions.value as string].spotsPerTable.value;
+        this.tableConditionsConfig[this.tableConfig.tableConditions.value as string]?.spotsPerTable.value;
 
       const takenSpots: number[] = (this.tableConfig.players.value as string[])
         .map(handle => this.tableConfig.playerSpotMap[handle]);

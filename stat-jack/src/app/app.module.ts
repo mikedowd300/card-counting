@@ -19,6 +19,10 @@ import { InsuranceStrategyComponent } from './components/modal/modal-content/ins
 import { UnitResizingComponent } from './components/modal/modal-content/unit-resizing/unit-resizing.component';
 import { WongingComponent } from './components/modal/modal-content/wonging/wonging.component';
 import { TippingComponent } from './components/modal/modal-content/tipping/tipping.component';
+import { DataDisplayComponent } from './components/modal/modal-content/data-display/data-display.component';
+import { StatjackChartComponent } from './components/modal/modal-content/data-display/statjack-chart/stat-jack-chart.component';
+import { StatjackChartV2Component } from './components/modal/modal-content/data-display/statjack-chart-v2/stat-jack-chart-v2.component'
+import { TotalAveragePercentageChartsComponent } from './components/modal/modal-content/data-display/total-average-percentage-charts/total-average-percentage-charts.component';
 
 @NgModule({
   declarations: [
@@ -27,6 +31,9 @@ import { TippingComponent } from './components/modal/modal-content/tipping/tippi
     CanDoubleOnComponent,
     ConditionsMakerComponent,
     DataCollectorComponent,
+    DataDisplayComponent,
+    StatjackChartComponent,
+    StatjackChartV2Component,
     FooterComponent,
     HeaderComponent,
     InsuranceStrategyComponent,
@@ -37,6 +44,7 @@ import { TippingComponent } from './components/modal/modal-content/tipping/tippi
     SurrenderChartMakerComponent,
     TableMakerComponent,
     TippingComponent,
+    TotalAveragePercentageChartsComponent,
     UnitResizingComponent,
     WongingComponent,
   ],

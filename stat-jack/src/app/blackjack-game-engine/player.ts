@@ -30,6 +30,7 @@ export class Player {
   tipSize: number = 0;
   tippedAway: number = 0;
   totalBet: number = 0;
+  amountBetPerHand: number = 0;
 
   // random unscheduled idea/question I had 
   firstBetCamoMultiplier: number = 1;
@@ -201,15 +202,18 @@ export class Player {
 
   updateTotalBet() {
     this.totalBet += [ ...this.wongSpotIds, this.spotId].length * this.getBetSize();
+    this.amountBetPerHand += [ ...this.wongSpotIds, this.spotId].length * this.getBetSize();
   }
 
   incTotalBet(betSize: number) {
     //used on split, double and insurance
     this.totalBet += betSize;
+    this.amountBetPerHand += betSize;
   }
 
   finalizeRound() {
     this.wongOut();
+    this.amountBetPerHand = 0;
   }
 
   setWonFirstHandOfShoe(val: boolean): void {
