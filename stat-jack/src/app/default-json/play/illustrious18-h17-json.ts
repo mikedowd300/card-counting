@@ -288,7 +288,7 @@ export const illustrious18H17JSON = {
     "conditions": ""
   },
   "4-AA": {
-    "options": "SP, ST",
+    "options": "SP, H, ST",
     "conditions": ""
   },
   "4-TT": {
@@ -432,7 +432,7 @@ export const illustrious18H17JSON = {
     "conditions": ""
   },
   "5-AA": {
-    "options": "SP, ST",
+    "options": "SP, H, ST",
     "conditions": ""
   },
   "5-TT": {
@@ -576,7 +576,7 @@ export const illustrious18H17JSON = {
     "conditions": ""
   },
   "6-AA": {
-    "options": "SP, ST",
+    "options": "SP, H, ST",
     "conditions": ""
   },
   "6-TT": {

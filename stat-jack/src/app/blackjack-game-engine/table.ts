@@ -139,11 +139,11 @@ export class Table {
     }
     // console.log(this.history);
     // console.log(this.history.getPlayersBankrollHistory('Mike'));
-    console.log(this.players.map(p => `${p.handle}:${p.bankroll}:${p.tippedAway}`).join(', '));
+    console.log(this.players.map(p => `${p.handle}:${p.bankroll}:${p.tippedAway}   `).join(', '));
     
     console.log(this.players.map(p => {
       const ratio = Math.round(10000 * ((p.bankroll - p.originalBankroll) / p.totalBet)) / 100;
-      return`${p.handle}: TOTAL BET:${p.totalBet} : MONEYWONtoMONEYBET RATIO: ${ratio} each of the ${this.totalRoundsDealt}`
+      return`${p.handle}: TOTAL BET:${p.totalBet} : MONEYWONtoMONEYBET RATIO: ${ratio} each of the ${this.totalRoundsDealt}   `
     }).join(', '));
 
     this.bustBonusService.logBustData();

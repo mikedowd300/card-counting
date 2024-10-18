@@ -86,7 +86,12 @@ export class Hand {
 
     let i = 0;
     if(actionConditions.length === 0 || !Object.keys(actionConditions[0])) {
-      console.log(actionConditions[0]);
+      console.log(chartKey);
+      console.log("this.options:", this.options);
+      console.log(conditions);
+      console.log(actionConditions);
+      console.log(this.playStrategy[chartKey]);
+      console.log(this.playStrategy[chartKey].options);
     }
     let action: string = Object.keys(actionConditions[0])[0];
     while(!actionConditions[i][Object.keys(actionConditions[i])[0]]) {
@@ -315,7 +320,7 @@ export class Hand {
 
   isSplittable() {
     if(this.shared.getPlayerBySpotId(this.spotId).bankroll <= this.betAmount
-      || this.conditions.MHFS === this.shared.getHandCount()
+      // || this.conditions.MHFS === this.shared.getHandCount()
       || (!this.conditions.RSA && this.isFromSplitAces)) {
       return false;
     }
